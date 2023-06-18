@@ -157,8 +157,9 @@ int main(void)
 
 			if(adcFlag)
 			{
-				gData = HAL_ADC_GetValue(&hadc1);
-				printf("%ld\r\n", gData);
+				//gData = HAL_ADC_GetValue(&hadc1);
+				//printf("%ld\r\n", gData);
+				printf("%d\r\n", valueADC);
 				adcFlag = RESET;
 			}
 			HAL_ADC_Start(&hadc1);
