@@ -138,8 +138,8 @@ int main(void)
 	HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&valueADC, 1);
 	__HAL_DMA_DISABLE_IT(&hdma_adc1, DMA_IT_HT);
 	HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
-	HAL_TIM_Base_Start(&htim2);	//start timer2 (which triggers ADC)
-	HAL_TIM_Base_Start(&htim1); //start timer1 which runs program for 8sec
+	HAL_TIM_Base_Start(&htim7);	//start timer7 (which triggers ADC)
+	HAL_TIM_Base_Start(&htim6); //start timer6 which runs program for 8sec
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -150,9 +150,9 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-		if(TIM1->CNT != 0)
+		if(TIM6->CNT != 0)
 		{
-			//printf("%ld\r\n", TIM1->CNT);
+			//printf("%ld\r\n", TIM6->CNT);
 			HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, valueDAC);
 
 			if(adcFlag)
