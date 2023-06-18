@@ -157,8 +157,6 @@ int main(void)
 
 			if(adcFlag)
 			{
-				//gData = HAL_ADC_GetValue(&hadc1);
-				//printf("%ld\r\n", gData);
 				printf("%d\r\n", valueADC);
 				adcFlag = RESET;
 			}
@@ -166,20 +164,6 @@ int main(void)
 			__HAL_DMA_DISABLE_IT(&hdma_adc1, DMA_IT_HT);
 
 		}
-
-//		SSD1306_Clear();
-//
-//
-//		SSD1306_GotoXY(38, 0);
-//		SSD1306_Puts(" TDR ", &Font_11x18, 0);
-//
-//		SSD1306_GotoXY(0, 24);
-////		sprintf(buffer1, "Temperature: %0.2f", temperature);
-//		SSD1306_Puts(buff, &Font_7x10, 1);
-//
-//		SSD1306_UpdateScreen();
-//
-//		HAL_Delay(1000);
 
 	}
   /* USER CODE END 3 */
@@ -235,7 +219,6 @@ void SystemClock_Config(void)
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
-	//HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
 	adcFlag = SET;
 }
 
