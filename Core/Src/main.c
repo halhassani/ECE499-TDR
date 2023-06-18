@@ -48,7 +48,6 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-volatile float gData = 0;
 char buff[50];
 
 /* USER CODE END PV */
@@ -68,7 +67,9 @@ float val = 0.0;
 
 
 uint32_t adcVal[3];
-uint32_t gVariable = 0;
+volatile uint32_t gData = 0;
+uint16_t valueADC;
+uint16_t valueDAC = 0;
 
 #define ADC_BUF_SIZE 		(20)
 
@@ -124,7 +125,6 @@ int main(void)
   MX_TIM2_Init();
   MX_USART2_UART_Init();
   MX_TIM1_Init();
-  MX_ADC2_Init();
   /* USER CODE BEGIN 2 */
 
 	SSD1306_Init();
@@ -133,21 +133,12 @@ int main(void)
 	SSD1306_Clear();
 
 	HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED); //Ex means this fxn is specific to this MCU family and therefore found in the extension file drivers
-	HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
-
-	HAL_ADCEx_MultiModeStart_DMA(&hadc1, adcBuff, ADC_BUF_SIZE);
-	LL_ADC_SetMultiDMATransfer(ADC12_COMMON, LL_ADC_MULTI_REG_DMA_LIMIT_RES12_10B); //ONEShot DMA mode of dual ADC
-//	HAL_ADC_Start_DMA(&hadc1, adcBuff, ADC_BUF_SIZE);
-	__HAL_DMA_DISABLE_IT(&hdma_adc1, DMA_IT_HT); //disable DMA interrupt cuz not really needed, saves time/performance
-
-//	printf("\n\rApplication started. \n\r");
-
+	HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&valueADC, 1);
+	//gData = HAL_ADC_GetValue(&hadc1);
 	HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
-	//start timer2 (which triggers ADC)
-	HAL_TIM_Base_Start(&htim2);
-	//now start ADC as DMA
 
-	HAL_TIM_Base_Start(&htim1);
+	HAL_TIM_Base_Start(&htim2);	//start timer2 (which triggers ADC)
+	HAL_TIM_Base_Start(&htim1); //start timer1 which runs program for 8sec
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -160,21 +151,22 @@ int main(void)
 
 		if(TIM1->CNT != 0)
 		{
+			printf("%ld\r\n", TIM1->CNT);
+			HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, valueDAC);
+
+			if(valueDAC < 4095)
+				valueDAC++;
+			else valueDAC = 0;
+
 			if(adcFlag)
 			{
-//			printf("------------\n\r");
-				for(i = 0; i < ADC_BUF_SIZE; i++)
-				{
-				printf("%u\n\r", (uint16_t)(adcBuff[i] & 0X0000FFFF));	//LSB: Master ADC
-				printf("%u\n\r", (uint16_t)(adcBuff[i] >> 16)); 		//MSB: Slave ADC
-				}
-
+				gData = HAL_ADC_GetValue(&hadc1);
+				printf("%ld\r\n", gData);
 				adcFlag = RESET;
-				HAL_ADCEx_MultiModeStart_DMA(&hadc1, adcBuff, ADC_BUF_SIZE);
-				LL_ADC_SetMultiDMATransfer(ADC12_COMMON, LL_ADC_MULTI_REG_DMA_LIMIT_RES12_10B);
-//					HAL_ADC_Start_DMA(&hadc1, adcBuff, ADC_BUF_SIZE);
-				__HAL_DMA_DISABLE_IT(&hdma_adc1, DMA_IT_HT);
 			}
+			HAL_Delay(20);
+			HAL_ADC_Start(&hadc1);
+
 		}
 
 //		SSD1306_Clear();
