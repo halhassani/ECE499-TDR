@@ -132,11 +132,12 @@ int main(void)
 	HAL_Delay(2000);
 	SSD1306_Clear();
 
+
+	__HAL_DMA_DISABLE_IT(&hdma_adc1, DMA_IT_HT);
 	HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED); //Ex means this fxn is specific to this MCU family and therefore found in the extension file drivers
 	HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&valueADC, 1);
-	//gData = HAL_ADC_GetValue(&hadc1);
+	__HAL_DMA_DISABLE_IT(&hdma_adc1, DMA_IT_HT);
 	HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
-
 	HAL_TIM_Base_Start(&htim2);	//start timer2 (which triggers ADC)
 	HAL_TIM_Base_Start(&htim1); //start timer1 which runs program for 8sec
   /* USER CODE END 2 */
@@ -151,12 +152,8 @@ int main(void)
 
 		if(TIM1->CNT != 0)
 		{
-			printf("%ld\r\n", TIM1->CNT);
+			//printf("%ld\r\n", TIM1->CNT);
 			HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, valueDAC);
-
-			if(valueDAC < 4095)
-				valueDAC++;
-			else valueDAC = 0;
 
 			if(adcFlag)
 			{
@@ -164,8 +161,8 @@ int main(void)
 				printf("%ld\r\n", gData);
 				adcFlag = RESET;
 			}
-			HAL_Delay(20);
 			HAL_ADC_Start(&hadc1);
+			__HAL_DMA_DISABLE_IT(&hdma_adc1, DMA_IT_HT);
 
 		}
 
