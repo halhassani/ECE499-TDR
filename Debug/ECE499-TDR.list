@@ -27,23 +27,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000030  00000000  00000000  000201f0  2**0
                   CONTENTS, READONLY
- 12 .debug_info   0002138b  00000000  00000000  00020220  2**0
+ 12 .debug_info   00021389  00000000  00000000  00020220  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_abbrev 00004242  00000000  00000000  000415ab  2**0
+ 13 .debug_abbrev 00004226  00000000  00000000  000415a9  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_aranges 00001b60  00000000  00000000  000457f0  2**3
+ 14 .debug_aranges 00001b60  00000000  00000000  000457d0  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_ranges 00001988  00000000  00000000  00047350  2**3
+ 15 .debug_ranges 00001988  00000000  00000000  00047330  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  000245d8  00000000  00000000  00048cd8  2**0
+ 16 .debug_macro  000245d8  00000000  00000000  00048cb8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   00022b17  00000000  00000000  0006d2b0  2**0
+ 17 .debug_line   00022b17  00000000  00000000  0006d290  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    000e2caa  00000000  00000000  0008fdc7  2**0
+ 18 .debug_str    000e2caa  00000000  00000000  0008fda7  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000050  00000000  00000000  00172a71  2**0
+ 19 .comment      00000050  00000000  00000000  00172a51  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00008a50  00000000  00000000  00172ac4  2**2
+ 20 .debug_frame  00008a50  00000000  00000000  00172aa4  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -2413,7 +2413,6 @@ int main(void)
 	SSD1306_Clear();
  8001698:	f000 fb1b 	bl	8001cd2 <SSD1306_Clear>
 
-
 	__HAL_DMA_DISABLE_IT(&hdma_adc1, DMA_IT_HT);
  800169c:	4b23      	ldr	r3, [pc, #140]	; (800172c <main+0xd0>)
  800169e:	681b      	ldr	r3, [r3, #0]
@@ -2426,7 +2425,7 @@ int main(void)
  80016ac:	217f      	movs	r1, #127	; 0x7f
  80016ae:	4820      	ldr	r0, [pc, #128]	; (8001730 <main+0xd4>)
  80016b0:	f002 fc0e 	bl	8003ed0 <HAL_ADCEx_Calibration_Start>
-	HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&valueADC, 1);
+	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) &valueADC, 1);
  80016b4:	2201      	movs	r2, #1
  80016b6:	491f      	ldr	r1, [pc, #124]	; (8001734 <main+0xd8>)
  80016b8:	481d      	ldr	r0, [pc, #116]	; (8001730 <main+0xd4>)
@@ -2475,8 +2474,6 @@ int main(void)
  80016fc:	2b00      	cmp	r3, #0
  80016fe:	d008      	beq.n	8001712 <main+0xb6>
 			{
-				//gData = HAL_ADC_GetValue(&hadc1);
-				//printf("%ld\r\n", gData);
 				printf("%d\r\n", valueADC);
  8001700:	4b0c      	ldr	r3, [pc, #48]	; (8001734 <main+0xd8>)
  8001702:	881b      	ldrh	r3, [r3, #0]
@@ -2637,7 +2634,6 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
  80017ee:	b083      	sub	sp, #12
  80017f0:	af00      	add	r7, sp, #0
  80017f2:	6078      	str	r0, [r7, #4]
-	//HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
 	adcFlag = SET;
  80017f4:	4b04      	ldr	r3, [pc, #16]	; (8001808 <HAL_ADC_ConvCpltCallback+0x1c>)
  80017f6:	2201      	movs	r2, #1
@@ -4260,9 +4256,9 @@ void MX_TIM7_Init(void)
  80020e4:	4b14      	ldr	r3, [pc, #80]	; (8002138 <MX_TIM7_Init+0x64>)
  80020e6:	4a15      	ldr	r2, [pc, #84]	; (800213c <MX_TIM7_Init+0x68>)
  80020e8:	601a      	str	r2, [r3, #0]
-  htim7.Init.Prescaler = 100;
+  htim7.Init.Prescaler = 1;
  80020ea:	4b13      	ldr	r3, [pc, #76]	; (8002138 <MX_TIM7_Init+0x64>)
- 80020ec:	2264      	movs	r2, #100	; 0x64
+ 80020ec:	2201      	movs	r2, #1
  80020ee:	605a      	str	r2, [r3, #4]
   htim7.Init.CounterMode = TIM_COUNTERMODE_UP;
  80020f0:	4b11      	ldr	r3, [pc, #68]	; (8002138 <MX_TIM7_Init+0x64>)
