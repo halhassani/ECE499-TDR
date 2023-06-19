@@ -138,6 +138,19 @@ int main(void)
 	HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
 	HAL_TIM_Base_Start(&htim7);	//start timer7 (which triggers ADC)
 	HAL_TIM_Base_Start(&htim6); //start timer6 which runs program for 8sec
+
+	//testing the juice//
+ // DAC->CR |= DAC_CR_BOFF1;  // Disable buffer mode for channel 1
+  DAC->CR |= DAC_CR_EN1;    // Enable channel 1
+
+  // Configure DAC trigger source (software trigger)
+  DAC->CR &= ~DAC_CR_TEN1;
+  DAC->CR &= ~DAC_CR_TSEL1;
+
+  // Enable DAC
+  DAC->CR |= DAC_CR_EN1;
+
+  uint8_t juicer;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -150,15 +163,30 @@ int main(void)
 
 		if(TIM6->CNT != 0)
 		{
+			juicer++;
+			if(juicer <= 32)
+			{
 			//printf("%ld\r\n", TIM6->CNT);
-			HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, valueDAC);
+			//HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, valueDAC);
+			// Set DAC output voltage to "on" state (e.g., VREF)
+			DAC->DHR12R1 = 4095;
 
+			// Trigger DAC conversion
+			DAC->SWTRIGR |= DAC_SWTRIGR_SWTRIG1;
+			}
+			else
+			{
+				DAC->DHR12R1 = 0; //set DAC output voltage to "off" state, or 0V
+				DAC->SWTRIGR |= DAC_SWTRIGR_SWTRIG1;
+			}
 			if(adcFlag)
 			{
 				printf("%d\r\n", valueADC);
 				adcFlag = RESET;
 			}
 			HAL_ADC_Start(&hadc1);
+			//HAL_Delay(1);
+
 			__HAL_DMA_DISABLE_IT(&hdma_adc1, DMA_IT_HT);
 
 		}
@@ -178,7 +206,7 @@ void SystemClock_Config(void)
 
   /** Configure the main internal regulator output voltage
   */
-  HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1_BOOST);
+  HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1);
 
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
@@ -188,8 +216,8 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV4;
-  RCC_OscInitStruct.PLL.PLLN = 85;
+  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV1;
+  RCC_OscInitStruct.PLL.PLLN = 15;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
   RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
@@ -207,7 +235,7 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_3) != HAL_OK)
   {
     Error_Handler();
   }
