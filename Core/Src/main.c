@@ -127,10 +127,10 @@ int main(void)
   MX_TIM15_Init();
   /* USER CODE BEGIN 2 */
 
-	SSD1306_Init();
-	OLED_Startup();
-	HAL_Delay(2000);
-	SSD1306_Clear();
+//	SSD1306_Init();
+//	OLED_Startup();
+//	HAL_Delay(2000);
+//	SSD1306_Clear();
 
 	__HAL_DMA_DISABLE_IT(&hdma_adc1, DMA_IT_HT);
 	HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED); //Ex means this fxn is specific to this MCU family and therefore found in the extension file drivers
@@ -152,7 +152,7 @@ int main(void)
   // Enable DAC
   DAC->CR |= DAC_CR_EN1;
 
-  uint8_t juicer;
+  uint8_t juicer = 0;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -165,8 +165,7 @@ int main(void)
 
 		if(TIM6->CNT != 0)
 		{
-			juicer++;
-			if(juicer <= 32)
+			if(juicer < 1 )
 			{
 			//printf("%ld\r\n", TIM6->CNT);
 			//HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, valueDAC);
@@ -175,17 +174,22 @@ int main(void)
 
 			// Trigger DAC conversion
 			DAC->SWTRIGR |= DAC_SWTRIGR_SWTRIG1;
+			juicer = 1;
 			}
 			else
 			{
 				DAC->DHR12R1 = 0; //set DAC output voltage to "off" state, or 0V
 				DAC->SWTRIGR |= DAC_SWTRIGR_SWTRIG1;
+				juicer = 0;
 			}
+
 			if(adcFlag)
 			{
-				printf("%d\r\n", valueADC);
+				//printf("%d\r\n", valueADC);
 				adcFlag = RESET;
 			}
+//			HAL_GPIO_TogglePin(GPIOA, GPIO5_Pin);
+//			HAL_GPIO_TogglePin(GPIOA, GPIO6_Pin);
 			//HAL_ADC_Start(&hadc1);
 			//HAL_Delay(1);
 
@@ -194,9 +198,9 @@ int main(void)
 		//SSD1306_Clear();
 		else
 		{
-			SSD1306_DrawLine(0,SSD1306_HEIGHT,0, 0,SSD1306_COLOR_WHITE);
-			SSD1306_DrawLine(0,SSD1306_HEIGHT,SSD1306_WIDTH,SSD1306_HEIGHT,SSD1306_COLOR_WHITE);
-			SSD1306_UpdateScreen();
+//			SSD1306_DrawLine(0,SSD1306_HEIGHT,0, 0,SSD1306_COLOR_WHITE);
+//			SSD1306_DrawLine(0,SSD1306_HEIGHT,SSD1306_WIDTH,SSD1306_HEIGHT,SSD1306_COLOR_WHITE);
+//			SSD1306_UpdateScreen();
 		}
 
 

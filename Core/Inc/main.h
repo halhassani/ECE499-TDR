@@ -58,6 +58,10 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define GPIO5_Pin GPIO_PIN_5
+#define GPIO5_GPIO_Port GPIOA
+#define GPIO6_Pin GPIO_PIN_6
+#define GPIO6_GPIO_Port GPIOA
 #define T_SWDIO_Pin GPIO_PIN_13
 #define T_SWDIO_GPIO_Port GPIOA
 #define T_SWCLK_Pin GPIO_PIN_14
