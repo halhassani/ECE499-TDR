@@ -124,6 +124,7 @@ int main(void)
   MX_USART2_UART_Init();
   MX_TIM6_Init();
   MX_TIM7_Init();
+  MX_TIM15_Init();
   /* USER CODE BEGIN 2 */
 
 	SSD1306_Init();
@@ -188,8 +189,15 @@ int main(void)
 			//HAL_Delay(1);
 
 			__HAL_DMA_DISABLE_IT(&hdma_adc1, DMA_IT_HT);
-
 		}
+		//SSD1306_Clear();
+		else
+		{
+			SSD1306_DrawLine(0,SSD1306_HEIGHT,0, 0,SSD1306_COLOR_WHITE);
+			SSD1306_DrawLine(0,SSD1306_HEIGHT,SSD1306_WIDTH,SSD1306_HEIGHT,SSD1306_COLOR_WHITE);
+			SSD1306_UpdateScreen();
+		}
+
 
 	}
   /* USER CODE END 3 */
