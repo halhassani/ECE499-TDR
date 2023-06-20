@@ -139,6 +139,7 @@ int main(void)
 	HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
 	HAL_TIM_Base_Start(&htim7);	//start timer7 (which triggers ADC)
 	HAL_TIM_Base_Start(&htim6); //start timer6 which runs program for 8sec
+	HAL_TIM_Base_Start(&htim15); //start timer15 which triggers ADC conversions at rate of 4MHz
 
 	//testing the juice//
  // DAC->CR |= DAC_CR_BOFF1;  // Disable buffer mode for channel 1
@@ -185,7 +186,7 @@ int main(void)
 				printf("%d\r\n", valueADC);
 				adcFlag = RESET;
 			}
-			HAL_ADC_Start(&hadc1);
+			//HAL_ADC_Start(&hadc1);
 			//HAL_Delay(1);
 
 			__HAL_DMA_DISABLE_IT(&hdma_adc1, DMA_IT_HT);
