@@ -121,16 +121,17 @@ int main(void)
   MX_I2C1_Init();
   MX_ADC1_Init();
   MX_DAC1_Init();
-  MX_TIM2_Init();
   MX_USART2_UART_Init();
-  MX_TIM1_Init();
+  MX_TIM6_Init();
+  MX_TIM7_Init();
+  MX_TIM15_Init();
   MX_ADC2_Init();
   /* USER CODE BEGIN 2 */
 
-	SSD1306_Init();
-	OLED_Startup();
-	HAL_Delay(2000);
-	SSD1306_Clear();
+//	SSD1306_Init();
+//	OLED_Startup();
+//	HAL_Delay(2000);
+//	SSD1306_Clear();
 
 	HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED); //Ex means this fxn is specific to this MCU family and therefore found in the extension file drivers
 	HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
@@ -144,10 +145,11 @@ int main(void)
 
 	HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
 	//start timer2 (which triggers ADC)
-	HAL_TIM_Base_Start(&htim2);
+	HAL_TIM_Base_Start(&htim6);
 	//now start ADC as DMA
 
-	HAL_TIM_Base_Start(&htim1);
+	HAL_TIM_Base_Start(&htim7);
+	HAL_TIM_Base_Start(&htim15);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -158,7 +160,7 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-		if(TIM1->CNT != 0)
+		if(TIM6->CNT != 0)
 		{
 			if(adcFlag)
 			{
@@ -174,6 +176,7 @@ int main(void)
 				LL_ADC_SetMultiDMATransfer(ADC12_COMMON, LL_ADC_MULTI_REG_DMA_LIMIT_RES12_10B);
 //					HAL_ADC_Start_DMA(&hadc1, adcBuff, ADC_BUF_SIZE);
 				__HAL_DMA_DISABLE_IT(&hdma_adc1, DMA_IT_HT);
+				HAL_GPIO_TogglePin(GPIOA, GPIO5_Pin);
 			}
 		}
 
@@ -206,7 +209,7 @@ void SystemClock_Config(void)
 
   /** Configure the main internal regulator output voltage
   */
-  HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1_BOOST);
+  HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1);
 
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
@@ -216,8 +219,8 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV4;
-  RCC_OscInitStruct.PLL.PLLN = 85;
+  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV1;
+  RCC_OscInitStruct.PLL.PLLN = 15;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
   RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
@@ -235,7 +238,7 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_3) != HAL_OK)
   {
     Error_Handler();
   }
