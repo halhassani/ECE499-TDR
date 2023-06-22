@@ -124,8 +124,8 @@ int main(void)
   MX_USART2_UART_Init();
   MX_TIM6_Init();
   MX_TIM7_Init();
-  MX_TIM15_Init();
   MX_ADC2_Init();
+  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 
 //	SSD1306_Init();
@@ -149,7 +149,8 @@ int main(void)
 	//now start ADC as DMA
 
 	HAL_TIM_Base_Start(&htim7);
-	HAL_TIM_Base_Start(&htim15);
+	HAL_TIM_Base_Start(&htim3);
+	HAL_TIM_OC_Start(&htim3,TIM_CHANNEL_1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -165,18 +166,18 @@ int main(void)
 			if(adcFlag)
 			{
 //			printf("------------\n\r");
-				for(i = 0; i < ADC_BUF_SIZE; i++)
-				{
-				printf("%u\n\r", (uint16_t)(adcBuff[i] & 0X0000FFFF));	//LSB: Master ADC
-				printf("%u\n\r", (uint16_t)(adcBuff[i] >> 16)); 		//MSB: Slave ADC
-				}
+//				for(i = 0; i < ADC_BUF_SIZE; i++)
+//				{
+//				//printf("%u\n\r", (uint16_t)(adcBuff[i] & 0X0000FFFF));	//LSB: Master ADC
+//				//printf("%u\n\r", (uint16_t)(adcBuff[i] >> 16)); 		//MSB: Slave ADC
+//				}
 
 				adcFlag = RESET;
 				HAL_ADCEx_MultiModeStart_DMA(&hadc1, adcBuff, ADC_BUF_SIZE);
 				LL_ADC_SetMultiDMATransfer(ADC12_COMMON, LL_ADC_MULTI_REG_DMA_LIMIT_RES12_10B);
 //					HAL_ADC_Start_DMA(&hadc1, adcBuff, ADC_BUF_SIZE);
 				__HAL_DMA_DISABLE_IT(&hdma_adc1, DMA_IT_HT);
-				HAL_GPIO_TogglePin(GPIOA, GPIO5_Pin);
+				//HAL_GPIO_TogglePin(GPIOA, GPIO5_Pin);
 			}
 		}
 
