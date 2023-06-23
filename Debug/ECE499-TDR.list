@@ -1402,9 +1402,9 @@ void MX_ADC1_Init(void)
  80010ae:	4b21      	ldr	r3, [pc, #132]	; (8001134 <MX_ADC1_Init+0xec>)
  80010b0:	f44f 6290 	mov.w	r2, #1152	; 0x480
  80010b4:	62da      	str	r2, [r3, #44]	; 0x2c
-  hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_RISING;
+  hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_RISINGFALLING;
  80010b6:	4b1f      	ldr	r3, [pc, #124]	; (8001134 <MX_ADC1_Init+0xec>)
- 80010b8:	f44f 6280 	mov.w	r2, #1024	; 0x400
+ 80010b8:	f44f 6240 	mov.w	r2, #3072	; 0xc00
  80010bc:	631a      	str	r2, [r3, #48]	; 0x30
   hadc1.Init.DMAContinuousRequests = ENABLE;
  80010be:	4b1d      	ldr	r3, [pc, #116]	; (8001134 <MX_ADC1_Init+0xec>)
@@ -3322,9 +3322,9 @@ void MX_TIM3_Init(void)
  8001abe:	4b29      	ldr	r3, [pc, #164]	; (8001b64 <MX_TIM3_Init+0xe4>)
  8001ac0:	2200      	movs	r2, #0
  8001ac2:	609a      	str	r2, [r3, #8]
-  htim3.Init.Period = 29;
+  htim3.Init.Period = 14;
  8001ac4:	4b27      	ldr	r3, [pc, #156]	; (8001b64 <MX_TIM3_Init+0xe4>)
- 8001ac6:	221d      	movs	r2, #29
+ 8001ac6:	220e      	movs	r2, #14
  8001ac8:	60da      	str	r2, [r3, #12]
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
  8001aca:	4b26      	ldr	r3, [pc, #152]	; (8001b64 <MX_TIM3_Init+0xe4>)
