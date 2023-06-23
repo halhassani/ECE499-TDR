@@ -141,9 +141,11 @@ int main(void)
 	HAL_TIM_Base_Start(&htim6); //start timer6 which runs program for 8sec
 	//HAL_TIM_Base_Start(&htim15); //start timer15 which triggers ADC conversions at rate of 4MHz
 
+	HAL_StatusTypeDef juicer2;
 
 	HAL_TIM_Base_Start(&htim3);
-	HAL_TIM_OC_Start(&htim3, TIM_CHANNEL_1 );
+
+	juicer2 = HAL_TIM_OC_Start(&htim3, TIM_CHANNEL_1 );
 
 	//testing the juice//
  // DAC->CR |= DAC_CR_BOFF1;  // Disable buffer mode for channel 1
