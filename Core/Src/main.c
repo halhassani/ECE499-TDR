@@ -125,6 +125,7 @@ int main(void)
   MX_TIM6_Init();
   MX_TIM7_Init();
   MX_TIM15_Init();
+  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 
 //	SSD1306_Init();
@@ -141,16 +142,20 @@ int main(void)
 	HAL_TIM_Base_Start(&htim6); //start timer6 which runs program for 8sec
 	HAL_TIM_Base_Start(&htim15); //start timer15 which triggers ADC conversions at rate of 4MHz
 
+
+	HAL_TIM_Base_Start(&htim3);
+	HAL_TIM_OC_Start(&htim3, TIM_CHANNEL_1 );
+
 	//testing the juice//
  // DAC->CR |= DAC_CR_BOFF1;  // Disable buffer mode for channel 1
-  DAC->CR |= DAC_CR_EN1;    // Enable channel 1
-
-  // Configure DAC trigger source (software trigger)
-  DAC->CR &= ~DAC_CR_TEN1;
-  DAC->CR &= ~DAC_CR_TSEL1;
-
-  // Enable DAC
-  DAC->CR |= DAC_CR_EN1;
+//  DAC->CR |= DAC_CR_EN1;    // Enable channel 1
+//
+//  // Configure DAC trigger source (software trigger)
+//  DAC->CR &= ~DAC_CR_TEN1;
+//  DAC->CR &= ~DAC_CR_TSEL1;
+//
+//  // Enable DAC
+//  DAC->CR |= DAC_CR_EN1;
 
   uint8_t juicer = 0;
   /* USER CODE END 2 */
@@ -165,33 +170,31 @@ int main(void)
 
 		if(TIM6->CNT != 0)
 		{
-			if(juicer < 1 )
-			{
-			//printf("%ld\r\n", TIM6->CNT);
-			//HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, valueDAC);
-			// Set DAC output voltage to "on" state (e.g., VREF)
-			DAC->DHR12R1 = 4095;
 
-			// Trigger DAC conversion
-			DAC->SWTRIGR |= DAC_SWTRIGR_SWTRIG1;
-			juicer = 1;
-			}
-			else
-			{
-				DAC->DHR12R1 = 0; //set DAC output voltage to "off" state, or 0V
-				DAC->SWTRIGR |= DAC_SWTRIGR_SWTRIG1;
-				juicer = 0;
-			}
+//			if(juicer < 1 )
+//			{
+//
+//				// Set DAC output voltage to "on" state (e.g., VREF)
+//				DAC->DHR12R1 = 4095;
+//
+//				// Trigger DAC conversion
+//				DAC->SWTRIGR |= DAC_SWTRIGR_SWTRIG1;
+//				juicer = 1;
+//			}
+//			else
+//			{
+//				DAC->DHR12R1 = 0; //set DAC output voltage to "off" state, or 0V
+//				DAC->SWTRIGR |= DAC_SWTRIGR_SWTRIG1;
+//				juicer = 0;
+//			}
 
 			if(adcFlag)
 			{
 				//printf("%d\r\n", valueADC);
 				adcFlag = RESET;
 			}
-//			HAL_GPIO_TogglePin(GPIOA, GPIO5_Pin);
-//			HAL_GPIO_TogglePin(GPIOA, GPIO6_Pin);
 			//HAL_ADC_Start(&hadc1);
-			//HAL_Delay(1);
+//			HAL_Delay(1);
 
 			__HAL_DMA_DISABLE_IT(&hdma_adc1, DMA_IT_HT);
 		}
