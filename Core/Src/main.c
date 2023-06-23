@@ -124,7 +124,6 @@ int main(void)
   MX_USART2_UART_Init();
   MX_TIM6_Init();
   MX_TIM7_Init();
-  MX_TIM15_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 
@@ -140,7 +139,7 @@ int main(void)
 	HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
 	HAL_TIM_Base_Start(&htim7);	//start timer7 (which triggers ADC)
 	HAL_TIM_Base_Start(&htim6); //start timer6 which runs program for 8sec
-	HAL_TIM_Base_Start(&htim15); //start timer15 which triggers ADC conversions at rate of 4MHz
+	//HAL_TIM_Base_Start(&htim15); //start timer15 which triggers ADC conversions at rate of 4MHz
 
 
 	HAL_TIM_Base_Start(&htim3);
