@@ -76,6 +76,8 @@ volatile uint32_t adcFlag = RESET;
 volatile uint32_t i;
 uint32_t adcBuff[ADC_BUF_SIZE];
 
+uint32_t tim3Buffer = 0;
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -125,6 +127,7 @@ int main(void)
   MX_TIM6_Init();
   MX_TIM7_Init();
   MX_TIM3_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
 
 //	SSD1306_Init();
@@ -135,6 +138,11 @@ int main(void)
 	__HAL_DMA_DISABLE_IT(&hdma_adc1, DMA_IT_HT);
 	HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED); //Ex means this fxn is specific to this MCU family and therefore found in the extension file drivers
 	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) &valueADC, 1);
+
+	HAL_TIM_Base_Start(&htim2);
+	HAL_TIM_OC_Start(&htim2, TIM_CHANNEL_1 );
+	HAL_TIM_DMABurst_WriteStart(&htim2, TIM_DMABASE_CNT, TIM_DMABASE_CNT, (uint32_t*) &tim3Buffer, TIM_DMABURSTLENGTH_1TRANSFER);
+
 	__HAL_DMA_DISABLE_IT(&hdma_adc1, DMA_IT_HT);
 	HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
 	HAL_TIM_Base_Start(&htim7);	//start timer7 (which triggers ADC)
@@ -169,9 +177,13 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
+
 		if(TIM6->CNT != 0)
 		{
-
+			HAL_TIM_DMABurst_WriteStart(&htim2, TIM_DMABASE_CNT, TIM_DMA_CC2, (uint32_t*) &tim3Buffer, TIM_DMABURSTLENGTH_1TRANSFER);
+			HAL_TIM_DMABurst_WriteStop(&htim2, TIM_DMA_CC2);
+			HAL_Delay(1);
+			printf("%ld\r\n", tim3Buffer);
 //			if(juicer < 1 )
 //			{
 //
@@ -192,6 +204,7 @@ int main(void)
 			if(adcFlag)
 			{
 				//printf("%d\r\n", valueADC);
+
 				adcFlag = RESET;
 			}
 			//HAL_ADC_Start(&hadc1);
