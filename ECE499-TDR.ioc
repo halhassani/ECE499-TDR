@@ -2,7 +2,7 @@
 ADC1.Channel-6\#ChannelRegularConversion=ADC_CHANNEL_1
 ADC1.ClockPrescaler=ADC_CLOCK_SYNC_PCLK_DIV4
 ADC1.CommonPathInternal=null|null|null|null
-ADC1.ContinuousConvMode=ENABLE
+ADC1.ContinuousConvMode=DISABLE
 ADC1.DMAContinuousRequests=ENABLE
 ADC1.EOCSelection=ADC_EOC_SINGLE_CONV
 ADC1.ExternalTrigConv=ADC_EXTERNALTRIG_T3_TRGO
@@ -249,7 +249,7 @@ TIM3.Channel-Output\ Compare1\ CH1=TIM_CHANNEL_1
 TIM3.IPParameters=Channel-Output Compare1 CH1,OCMode_1,Prescaler,PeriodNoDither,TIM_MasterOutputTrigger,OCPolarity_1
 TIM3.OCMode_1=TIM_OCMODE_TOGGLE
 TIM3.OCPolarity_1=TIM_OCPOLARITY_HIGH
-TIM3.PeriodNoDither=170-1
+TIM3.PeriodNoDither=85-1
 TIM3.Prescaler=1-1
 TIM3.TIM_MasterOutputTrigger=TIM_TRGO_UPDATE
 TIM6.IPParameters=Prescaler,PeriodNoDither

@@ -162,8 +162,8 @@ int main(void)
 //  // Configure DAC trigger source (software trigger)
 //  DAC->CR &= ~DAC_CR_TEN1;
 //  DAC->CR &= ~DAC_CR_TSEL1;
-//
-//  // Enable DAC
+
+  // Enable DAC
 //  DAC->CR |= DAC_CR_EN1;
 
   uint8_t juicer = 0;

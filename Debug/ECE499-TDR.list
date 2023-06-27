@@ -1386,9 +1386,9 @@ void MX_ADC1_Init(void)
  8001094:	4b27      	ldr	r3, [pc, #156]	; (8001134 <MX_ADC1_Init+0xec>)
  8001096:	2200      	movs	r2, #0
  8001098:	771a      	strb	r2, [r3, #28]
-  hadc1.Init.ContinuousConvMode = ENABLE;
+  hadc1.Init.ContinuousConvMode = DISABLE;
  800109a:	4b26      	ldr	r3, [pc, #152]	; (8001134 <MX_ADC1_Init+0xec>)
- 800109c:	2201      	movs	r2, #1
+ 800109c:	2200      	movs	r2, #0
  800109e:	775a      	strb	r2, [r3, #29]
   hadc1.Init.NbrOfConversion = 1;
  80010a0:	4b24      	ldr	r3, [pc, #144]	; (8001134 <MX_ADC1_Init+0xec>)
@@ -2499,8 +2499,8 @@ int main(void)
  8001734:	4603      	mov	r3, r0
  8001736:	71fb      	strb	r3, [r7, #7]
 //  DAC->CR &= ~DAC_CR_TSEL1;
-//
-//  // Enable DAC
+
+  // Enable DAC
 //  DAC->CR |= DAC_CR_EN1;
 
   uint8_t juicer = 0;
@@ -3352,9 +3352,9 @@ void MX_TIM2_Init(void)
  8001ae4:	4b29      	ldr	r3, [pc, #164]	; (8001b8c <MX_TIM2_Init+0xe8>)
  8001ae6:	2200      	movs	r2, #0
  8001ae8:	609a      	str	r2, [r3, #8]
-  htim2.Init.Period = 6;
+  htim2.Init.Period = 4;
  8001aea:	4b28      	ldr	r3, [pc, #160]	; (8001b8c <MX_TIM2_Init+0xe8>)
- 8001aec:	2206      	movs	r2, #6
+ 8001aec:	2204      	movs	r2, #4
  8001aee:	60da      	str	r2, [r3, #12]
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
  8001af0:	4b26      	ldr	r3, [pc, #152]	; (8001b8c <MX_TIM2_Init+0xe8>)
@@ -3508,9 +3508,9 @@ void MX_TIM3_Init(void)
  8001bce:	4b29      	ldr	r3, [pc, #164]	; (8001c74 <MX_TIM3_Init+0xe4>)
  8001bd0:	2200      	movs	r2, #0
  8001bd2:	609a      	str	r2, [r3, #8]
-  htim3.Init.Period = 169;
+  htim3.Init.Period = 84;
  8001bd4:	4b27      	ldr	r3, [pc, #156]	; (8001c74 <MX_TIM3_Init+0xe4>)
- 8001bd6:	22a9      	movs	r2, #169	; 0xa9
+ 8001bd6:	2254      	movs	r2, #84	; 0x54
  8001bd8:	60da      	str	r2, [r3, #12]
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
  8001bda:	4b26      	ldr	r3, [pc, #152]	; (8001c74 <MX_TIM3_Init+0xe4>)
