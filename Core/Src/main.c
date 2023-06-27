@@ -180,10 +180,10 @@ int main(void)
 
 		if(TIM6->CNT != 0)
 		{
-			HAL_TIM_DMABurst_WriteStart(&htim2, TIM_DMABASE_CNT, TIM_DMA_CC2, (uint32_t*) &tim3Buffer, TIM_DMABURSTLENGTH_1TRANSFER);
-			HAL_TIM_DMABurst_WriteStop(&htim2, TIM_DMA_CC2);
-			HAL_Delay(1);
-			printf("%ld\r\n", tim3Buffer);
+//			HAL_TIM_DMABurst_WriteStart(&htim2, TIM_DMABASE_CNT, TIM_DMA_CC2, (uint32_t*) &tim3Buffer, TIM_DMABURSTLENGTH_1TRANSFER);
+//			HAL_TIM_DMABurst_WriteStop(&htim2, TIM_DMA_CC2);
+//			HAL_Delay(1);
+//			printf("%ld\r\n", tim3Buffer);
 //			if(juicer < 1 )
 //			{
 //
@@ -236,18 +236,17 @@ void SystemClock_Config(void)
 
   /** Configure the main internal regulator output voltage
   */
-  HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1);
+  HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1_BOOST);
 
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV1;
-  RCC_OscInitStruct.PLL.PLLN = 15;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV4;
+  RCC_OscInitStruct.PLL.PLLN = 40;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
   RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
@@ -265,7 +264,7 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_3) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
   {
     Error_Handler();
   }
