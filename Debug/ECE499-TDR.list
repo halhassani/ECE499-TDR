@@ -2605,11 +2605,11 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
  80017c6:	2303      	movs	r3, #3
  80017c8:	63bb      	str	r3, [r7, #56]	; 0x38
-  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV4;
- 80017ca:	2304      	movs	r3, #4
+  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV5;
+ 80017ca:	2305      	movs	r3, #5
  80017cc:	63fb      	str	r3, [r7, #60]	; 0x3c
-  RCC_OscInitStruct.PLL.PLLN = 40;
- 80017ce:	2328      	movs	r3, #40	; 0x28
+  RCC_OscInitStruct.PLL.PLLN = 68;
+ 80017ce:	2344      	movs	r3, #68	; 0x44
  80017d0:	643b      	str	r3, [r7, #64]	; 0x40
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
  80017d2:	2302      	movs	r3, #2
@@ -3341,17 +3341,17 @@ void MX_TIM2_Init(void)
  8001ad2:	4b2d      	ldr	r3, [pc, #180]	; (8001b88 <MX_TIM2_Init+0xe8>)
  8001ad4:	f04f 4280 	mov.w	r2, #1073741824	; 0x40000000
  8001ad8:	601a      	str	r2, [r3, #0]
-  htim2.Init.Prescaler = 20000;
+  htim2.Init.Prescaler = 170;
  8001ada:	4b2b      	ldr	r3, [pc, #172]	; (8001b88 <MX_TIM2_Init+0xe8>)
- 8001adc:	f644 6220 	movw	r2, #20000	; 0x4e20
- 8001ae0:	605a      	str	r2, [r3, #4]
+ 8001adc:	22aa      	movs	r2, #170	; 0xaa
+ 8001ade:	605a      	str	r2, [r3, #4]
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
- 8001ae2:	4b29      	ldr	r3, [pc, #164]	; (8001b88 <MX_TIM2_Init+0xe8>)
- 8001ae4:	2200      	movs	r2, #0
- 8001ae6:	609a      	str	r2, [r3, #8]
-  htim2.Init.Period = 5;
- 8001ae8:	4b27      	ldr	r3, [pc, #156]	; (8001b88 <MX_TIM2_Init+0xe8>)
- 8001aea:	2205      	movs	r2, #5
+ 8001ae0:	4b29      	ldr	r3, [pc, #164]	; (8001b88 <MX_TIM2_Init+0xe8>)
+ 8001ae2:	2200      	movs	r2, #0
+ 8001ae4:	609a      	str	r2, [r3, #8]
+  htim2.Init.Period = 999;
+ 8001ae6:	4b28      	ldr	r3, [pc, #160]	; (8001b88 <MX_TIM2_Init+0xe8>)
+ 8001ae8:	f240 32e7 	movw	r2, #999	; 0x3e7
  8001aec:	60da      	str	r2, [r3, #12]
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
  8001aee:	4b26      	ldr	r3, [pc, #152]	; (8001b88 <MX_TIM2_Init+0xe8>)
@@ -3504,9 +3504,9 @@ void MX_TIM3_Init(void)
  8001bca:	4b29      	ldr	r3, [pc, #164]	; (8001c70 <MX_TIM3_Init+0xe4>)
  8001bcc:	2200      	movs	r2, #0
  8001bce:	609a      	str	r2, [r3, #8]
-  htim3.Init.Period = 29;
+  htim3.Init.Period = 169;
  8001bd0:	4b27      	ldr	r3, [pc, #156]	; (8001c70 <MX_TIM3_Init+0xe4>)
- 8001bd2:	221d      	movs	r2, #29
+ 8001bd2:	22a9      	movs	r2, #169	; 0xa9
  8001bd4:	60da      	str	r2, [r3, #12]
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
  8001bd6:	4b26      	ldr	r3, [pc, #152]	; (8001c70 <MX_TIM3_Init+0xe4>)
@@ -3736,52 +3736,51 @@ void MX_TIM7_Init(void)
  8001d14:	4b11      	ldr	r3, [pc, #68]	; (8001d5c <MX_TIM7_Init+0x64>)
  8001d16:	2200      	movs	r2, #0
  8001d18:	609a      	str	r2, [r3, #8]
-  htim7.Init.Period = 59;
+  htim7.Init.Period = 339;
  8001d1a:	4b10      	ldr	r3, [pc, #64]	; (8001d5c <MX_TIM7_Init+0x64>)
- 8001d1c:	223b      	movs	r2, #59	; 0x3b
- 8001d1e:	60da      	str	r2, [r3, #12]
+ 8001d1c:	f240 1253 	movw	r2, #339	; 0x153
+ 8001d20:	60da      	str	r2, [r3, #12]
   htim7.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
- 8001d20:	4b0e      	ldr	r3, [pc, #56]	; (8001d5c <MX_TIM7_Init+0x64>)
- 8001d22:	2200      	movs	r2, #0
- 8001d24:	619a      	str	r2, [r3, #24]
+ 8001d22:	4b0e      	ldr	r3, [pc, #56]	; (8001d5c <MX_TIM7_Init+0x64>)
+ 8001d24:	2200      	movs	r2, #0
+ 8001d26:	619a      	str	r2, [r3, #24]
   if (HAL_TIM_Base_Init(&htim7) != HAL_OK)
- 8001d26:	480d      	ldr	r0, [pc, #52]	; (8001d5c <MX_TIM7_Init+0x64>)
- 8001d28:	f004 f868 	bl	8005dfc <HAL_TIM_Base_Init>
- 8001d2c:	4603      	mov	r3, r0
- 8001d2e:	2b00      	cmp	r3, #0
- 8001d30:	d001      	beq.n	8001d36 <MX_TIM7_Init+0x3e>
+ 8001d28:	480c      	ldr	r0, [pc, #48]	; (8001d5c <MX_TIM7_Init+0x64>)
+ 8001d2a:	f004 f867 	bl	8005dfc <HAL_TIM_Base_Init>
+ 8001d2e:	4603      	mov	r3, r0
+ 8001d30:	2b00      	cmp	r3, #0
+ 8001d32:	d001      	beq.n	8001d38 <MX_TIM7_Init+0x40>
   {
     Error_Handler();
- 8001d32:	f7ff fd87 	bl	8001844 <Error_Handler>
+ 8001d34:	f7ff fd86 	bl	8001844 <Error_Handler>
   }
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
- 8001d36:	2320      	movs	r3, #32
- 8001d38:	607b      	str	r3, [r7, #4]
+ 8001d38:	2320      	movs	r3, #32
+ 8001d3a:	607b      	str	r3, [r7, #4]
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
- 8001d3a:	2300      	movs	r3, #0
- 8001d3c:	60fb      	str	r3, [r7, #12]
+ 8001d3c:	2300      	movs	r3, #0
+ 8001d3e:	60fb      	str	r3, [r7, #12]
   if (HAL_TIMEx_MasterConfigSynchronization(&htim7, &sMasterConfig) != HAL_OK)
- 8001d3e:	1d3b      	adds	r3, r7, #4
- 8001d40:	4619      	mov	r1, r3
- 8001d42:	4806      	ldr	r0, [pc, #24]	; (8001d5c <MX_TIM7_Init+0x64>)
- 8001d44:	f005 fb64 	bl	8007410 <HAL_TIMEx_MasterConfigSynchronization>
- 8001d48:	4603      	mov	r3, r0
- 8001d4a:	2b00      	cmp	r3, #0
- 8001d4c:	d001      	beq.n	8001d52 <MX_TIM7_Init+0x5a>
+ 8001d40:	1d3b      	adds	r3, r7, #4
+ 8001d42:	4619      	mov	r1, r3
+ 8001d44:	4805      	ldr	r0, [pc, #20]	; (8001d5c <MX_TIM7_Init+0x64>)
+ 8001d46:	f005 fb63 	bl	8007410 <HAL_TIMEx_MasterConfigSynchronization>
+ 8001d4a:	4603      	mov	r3, r0
+ 8001d4c:	2b00      	cmp	r3, #0
+ 8001d4e:	d001      	beq.n	8001d54 <MX_TIM7_Init+0x5c>
   {
     Error_Handler();
- 8001d4e:	f7ff fd79 	bl	8001844 <Error_Handler>
+ 8001d50:	f7ff fd78 	bl	8001844 <Error_Handler>
   }
   /* USER CODE BEGIN TIM7_Init 2 */
 
   /* USER CODE END TIM7_Init 2 */
 
 }
- 8001d52:	bf00      	nop
- 8001d54:	3710      	adds	r7, #16
- 8001d56:	46bd      	mov	sp, r7
- 8001d58:	bd80      	pop	{r7, pc}
- 8001d5a:	bf00      	nop
+ 8001d54:	bf00      	nop
+ 8001d56:	3710      	adds	r7, #16
+ 8001d58:	46bd      	mov	sp, r7
+ 8001d5a:	bd80      	pop	{r7, pc}
  8001d5c:	2000041c 	.word	0x2000041c
  8001d60:	40001400 	.word	0x40001400
 
@@ -14332,7 +14331,7 @@ uint32_t HAL_RCC_GetSysClockFreq(void)
  8005912:	bf00      	nop
  8005914:	40021000 	.word	0x40021000
  8005918:	00f42400 	.word	0x00f42400
- 800591c:	0206cc80 	.word	0x0206cc80
+ 800591c:	017d7840 	.word	0x017d7840
 
 08005920 <HAL_RCC_GetHCLKFreq>:
   *
@@ -14494,7 +14493,7 @@ static uint32_t RCC_GetSysClockFreqFromPLLSource(void)
  8005a0a:	f85d 7b04 	ldr.w	r7, [sp], #4
  8005a0e:	4770      	bx	lr
  8005a10:	40021000 	.word	0x40021000
- 8005a14:	0206cc80 	.word	0x0206cc80
+ 8005a14:	017d7840 	.word	0x017d7840
  8005a18:	00f42400 	.word	0x00f42400
 
 08005a1c <HAL_RCCEx_PeriphCLKConfig>:
