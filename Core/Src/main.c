@@ -167,11 +167,11 @@ int main(void)
 			if(adcFlag)
 			{
 //			printf("------------\n\r");
-//				for(i = 0; i < ADC_BUF_SIZE; i++)
-//				{
-//				//printf("%u\n\r", (uint16_t)(adcBuff[i] & 0X0000FFFF));	//LSB: Master ADC
-//				//printf("%u\n\r", (uint16_t)(adcBuff[i] >> 16)); 		//MSB: Slave ADC
-//				}
+				for(i = 0; i < ADC_BUF_SIZE; i++)
+				{
+				printf("%u\n\r", (uint16_t)(adcBuff[i] & 0X0000FFFF));	//LSB: Master ADC
+				printf("%u\n\r", (uint16_t)(adcBuff[i] >> 16)); 		//MSB: Slave ADC
+				}
 
 				adcFlag = RESET;
 				HAL_ADCEx_MultiModeStart_DMA(&hadc1, adcBuff, ADC_BUF_SIZE);
