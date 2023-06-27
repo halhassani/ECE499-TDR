@@ -142,16 +142,16 @@ int main(void)
 //	HAL_ADC_Start_DMA(&hadc1, adcBuff, ADC_BUF_SIZE);
 	__HAL_DMA_DISABLE_IT(&hdma_adc1, DMA_IT_HT); //disable DMA interrupt cuz not really needed, saves time/performance
 
-//	printf("\n\rApplication started. \n\r");
-
 	HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
-	//start timer2 (which triggers ADC)
-	HAL_TIM_Base_Start(&htim6);
-	//now start ADC as DMA
 
-	HAL_TIM_Base_Start(&htim7);
-	HAL_TIM_Base_Start(&htim3);
+	HAL_TIM_Base_Start(&htim6); //TIM6: 10s runs while loop
+	HAL_TIM_Base_Start(&htim7); //TIM7: DAC trigger timer
+
+	HAL_TIM_Base_Start(&htim3); //TIM3: ADC trigger timer
 	HAL_TIM_OC_Start(&htim3,TIM_CHANNEL_1);
+
+	HAL_TIM_Base_Start(&htim2); //TIM2: DMA trigger timer debugging testing juicer
+	HAL_TIM_OC_Start(&htim2,TIM_CHANNEL_1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -178,7 +178,6 @@ int main(void)
 				LL_ADC_SetMultiDMATransfer(ADC12_COMMON, LL_ADC_MULTI_REG_DMA_LIMIT_RES12_10B);
 //					HAL_ADC_Start_DMA(&hadc1, adcBuff, ADC_BUF_SIZE);
 				__HAL_DMA_DISABLE_IT(&hdma_adc1, DMA_IT_HT);
-				//HAL_GPIO_TogglePin(GPIOA, GPIO5_Pin);
 			}
 		}
 
