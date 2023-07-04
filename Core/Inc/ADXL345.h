@@ -37,12 +37,16 @@
 #define ADXL_FIFO_STATUS			0X39
 
 
-
 typedef struct
 {
+
+	I2C_HandleTypeDef* i2cHandle;
 	float acc_mps2[3]; //(X,Y,Z) acceleration data in m/s^2
 
-	float temp_C; //temperature data in deg C
+
+	//no temperature sensor on this device (ADXL345)
+//	float temp_C; //temperature data in deg C
+
 } ADXL345;
 
 
@@ -50,14 +54,13 @@ typedef struct
 uint8_t ADXL345_Init(ADXL345* device, I2C_HandleTypeDef* i2cHandle);
 
 //Data Acquisition fxns:
-HAL_StatusTypeDef ADXL345_ReadTemp(ADXL345* device);
-HAL_StatusTypeDef ADXL345_ReadAccel(ADXL345* device);
+HAL_StatusTypeDef ADXL345_ReadAccel(ADXL345* device); //passing the device struct handle ptr juicer
 
 //Low-Level Register Fxns:
-HAL_StatusTypeDef ADXL345_ReadRegister(ADXL345* device, uint8_t reg, uint8_t* pdata);
+HAL_StatusTypeDef ADXL345_ReadRegister(ADXL345* device, uint8_t reg, uint8_t* pdata); //reads 1 byte of data from reg
 HAL_StatusTypeDef ADXL345_ReadRegisters(ADXL345* device, uint8_t reg, uint8_t* pdata, uint8_t len);
 
-HAL_StatusTypeDef ADXL345_WriteRegister(ADXL345* device, uint8_t reg, uint8_t* pdata);
+HAL_StatusTypeDef ADXL345_WriteRegister(ADXL345* device, uint8_t reg, uint8_t* pdata); //writes 1byte of data to reg
 
 
 #endif /* INC_ADXL345_H_ */
