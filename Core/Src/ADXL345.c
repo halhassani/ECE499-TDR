@@ -28,7 +28,7 @@ uint8_t ADXL345_Init(ADXL345* device, I2C_HandleTypeDef* i2cHandle)
 
 	status = ADXL345_ReadRegister(device, ADXL_DEV_ID, &regData); //reads the reg and stores 1byte into regData var
 	errNum += (status != HAL_OK);
-	if( regData != ADXL_DEV_ID)
+	if( regData != ADXL_REG_DEV_ID)
 	{
 		return 255;
 	}
@@ -46,6 +46,11 @@ uint8_t ADXL345_Init(ADXL345* device, I2C_HandleTypeDef* i2cHandle)
 	status = ADXL345_WriteRegister(device, ADXL_PWR_CTRL, &regData);
 	errNum += (status != HAL_OK);
 
+	//DATA_FORMAT register config juicer:
+	regData = 0x03; //set to 10bit res mode, range up to 16g
+	status = ADXL345_WriteRegister(device, ADXL_DATA_FORMAT, &regData);
+	errNum += (status != HAL_OK);
+
 	return errNum; //ie: if errNum != 0, we will know that the ADXL init sequence failed, ong fr fr
 }
 
@@ -54,7 +59,27 @@ uint8_t ADXL345_Init(ADXL345* device, I2C_HandleTypeDef* i2cHandle)
 
 
 //Data Acquisition fxns:
-HAL_StatusTypeDef ADXL345_ReadAccel(ADXL345* device); //passing the device struct handle ptr juicer
+HAL_StatusTypeDef ADXL345_ReadAccel(ADXL345* device) //passing the device struct handle ptr juicer
+{
+
+
+	uint8_t regData[6]; //read all 6 registers (x0,x1 y0,y1 z0,z1) //24 bits each reg
+
+	//combine the raw register vals to give the raw (unsigned) accel. readings
+	int32_t accelRawSigned[3];
+
+	HAL_StatusTypeDef status = ADXL345_ReadRegisters(device, ADXL_DATA_X0, regData, 6);
+	accelRawSigned[0] = ( (regData[0]<< 8) | (regData[1]<< 0) ); //X
+	accelRawSigned[1] = ( (regData[2]<< 8) | (regData[3]<< 0) ); //Y
+	accelRawSigned[2] = ( (regData[4]<< 8) | (regData[5]<< 0) ); //Z
+
+  //now convert to m/s^2 (given range setting of +/-16g)
+	device->acc_mps2[0] = 9.81f * 0.000488f * accelRawSigned[0];
+  device->acc_mps2[1] = 9.81f * 0.000488f * accelRawSigned[1];
+  device->acc_mps2[2] = 9.81f * 0.000488f * accelRawSigned[2];
+
+	return status;
+}
 
 //Low-Level Register Fxns:
 

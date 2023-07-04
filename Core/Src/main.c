@@ -17,7 +17,6 @@
  */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include <ADXL345.h>
 #include "main.h"
 #include "adc.h"
 #include "dac.h"
@@ -34,7 +33,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+#include "ADXL345.h"
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -51,7 +50,7 @@
 /* USER CODE BEGIN PV */
 
 char buff[25];
-
+ADXL345 accelDevice;
 
 /* USER CODE END PV */
 
@@ -112,7 +111,6 @@ int main(void)
   MX_USART2_UART_Init();
   MX_TIM6_Init();
   MX_TIM7_Init();
-  MX_ADC2_Init();
   MX_TIM3_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
@@ -121,6 +119,9 @@ int main(void)
 	OLED_Startup();
 	HAL_Delay(2000);
 	SSD1306_Clear();
+
+
+	ADXL345_Init(&accelDevice, &hi2c1);
 
   /* USER CODE END 2 */
 
@@ -132,6 +133,8 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
+		ADXL345_ReadAccel(&accelDevice);
+
 
 		SSD1306_Clear();
 
@@ -140,7 +143,15 @@ int main(void)
 		SSD1306_Puts(" TDR ", &Font_11x18, 0);
 
 		SSD1306_GotoXY(0, 24);
-//		sprintf(buffer1, "Temperature: %0.2f", temperature);
+		sprintf(buff, "X: %0.2f", accelDevice.acc_mps2[0]);
+		SSD1306_Puts(buff, &Font_7x10, 1);
+
+		SSD1306_GotoXY(0, 36);
+		sprintf(buff, "Y: %0.2f", accelDevice.acc_mps2[1]);
+		SSD1306_Puts(buff, &Font_7x10, 1);
+
+		SSD1306_GotoXY(0, 48);
+		sprintf(buff, "Z: %0.2f", accelDevice.acc_mps2[2]);
 		SSD1306_Puts(buff, &Font_7x10, 1);
 
 		SSD1306_UpdateScreen();

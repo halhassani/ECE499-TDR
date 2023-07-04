@@ -13,7 +13,9 @@
 
 
 #define ADXL_I2C_ADDR					(0x53<<1) //as long as pin ASEL = 0 (grounded)
-#define ADXL_DEV_ID						0X00
+#define ADXL_DEV_ID						0XE5
+
+#define ADXL_REG_DEV_ID				0X00
 #define ADXL_THRESH_TAP				0X1D
 #define ADXL_OFSX							0X1E
 #define ADXL_OFSY							0X1F
