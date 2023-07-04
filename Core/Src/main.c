@@ -17,6 +17,7 @@
  */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include <ADXL345.h>
 #include "main.h"
 #include "adc.h"
 #include "dac.h"
