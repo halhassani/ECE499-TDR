@@ -211,6 +211,21 @@ Discarded input sections
  .text          0x0000000000000000        0x0 ./Core/Src/ADXL345.o
  .data          0x0000000000000000        0x0 ./Core/Src/ADXL345.o
  .bss           0x0000000000000000        0x0 ./Core/Src/ADXL345.o
+ .group         0x0000000000000000        0xc ./Core/Src/TDC7200_driver.o
+ .text          0x0000000000000000        0x0 ./Core/Src/TDC7200_driver.o
+ .data          0x0000000000000000        0x0 ./Core/Src/TDC7200_driver.o
+ .bss           0x0000000000000000        0x0 ./Core/Src/TDC7200_driver.o
+ .debug_info    0x0000000000000000       0x21 ./Core/Src/TDC7200_driver.o
+ .debug_abbrev  0x0000000000000000       0x13 ./Core/Src/TDC7200_driver.o
+ .debug_aranges
+                0x0000000000000000       0x18 ./Core/Src/TDC7200_driver.o
+ .debug_macro   0x0000000000000000       0x11 ./Core/Src/TDC7200_driver.o
+ .debug_macro   0x0000000000000000      0xa78 ./Core/Src/TDC7200_driver.o
+ .debug_line    0x0000000000000000       0x3d ./Core/Src/TDC7200_driver.o
+ .debug_str     0x0000000000000000     0x2d2d ./Core/Src/TDC7200_driver.o
+ .comment       0x0000000000000000       0x51 ./Core/Src/TDC7200_driver.o
+ .ARM.attributes
+                0x0000000000000000       0x34 ./Core/Src/TDC7200_driver.o
  .group         0x0000000000000000        0xc ./Core/Src/adc.o
  .group         0x0000000000000000        0xc ./Core/Src/adc.o
  .group         0x0000000000000000        0xc ./Core/Src/adc.o
@@ -6031,6 +6046,7 @@ LOAD c:/st/stm32cubeide_1.11.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.ext
 LOAD c:/st/stm32cubeide_1.11.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard/crtbegin.o
 LOAD c:/st/stm32cubeide_1.11.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/crt0.o
 LOAD ./Core/Src/ADXL345.o
+LOAD ./Core/Src/TDC7200_driver.o
 LOAD ./Core/Src/adc.o
 LOAD ./Core/Src/dac.o
 LOAD ./Core/Src/dma.o
