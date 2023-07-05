@@ -8,6 +8,8 @@
 #ifndef INC_TDC7200_DRIVER_H_
 #define INC_TDC7200_DRIVER_H_
 
+#include "stm32g4xx.h"
+
 //Register Defines for TDC7200 Memory Locations
 #define TDC_CONFIG1								0X00
 #define TDC_CONFIG2								0X01
@@ -32,5 +34,12 @@
 #define TDC_TIME6									0X1A
 #define TDC_CALIBRATION1					0X1B
 #define TDC_CALIBRATION2					0X1C
+
+//Functions
+void TDC7200_StartMeasure(void);
+void TDC7200_WriteRegister(uint8_t reg, uint8_t configRegData);
+void TDC7200_ReadRegister(uint8_t reg, uint8_t configRegData);
+double TDC7200_ReadBytes(uint8_t numOfBytes, uint8_t readOpCode);
+
 
 #endif /* INC_TDC7200_DRIVER_H_ */
