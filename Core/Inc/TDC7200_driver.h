@@ -9,6 +9,7 @@
 #define INC_TDC7200_DRIVER_H_
 
 #include "stm32g4xx.h"
+#include "stm32g4xx_hal_spi.h"
 
 //Register Defines for TDC7200 Memory Locations
 #define TDC_CONFIG1								0X00
