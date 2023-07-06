@@ -38,8 +38,8 @@
 
 //Functions
 void TDC7200_StartMeasure(void);
-void TDC7200_WriteRegister(uint8_t reg, uint8_t configRegData);
-void TDC7200_ReadRegister(uint8_t reg, uint8_t configRegData);
+void TDC7200_WriteRegister(uint8_t reg, uint8_t txData);
+void TDC7200_ReadRegister(uint8_t reg, uint8_t rxData);
 double TDC7200_ReadBytes(uint8_t numOfBytes, uint8_t readOpCode);
 
 
