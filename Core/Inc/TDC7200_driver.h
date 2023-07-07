@@ -46,16 +46,100 @@
 //Register Structures to make low-level TDC configurations easier/faster ~~ABSTRACTION~~
 typedef struct
 {
-	uint8_t start_measurement : 1;	//bit index 0
-	uint8_t measurement_mode 	: 2;
-	uint8_t start_edge				: 1;
-	uint8_t stop_edge					: 1;
+	uint8_t start_measurement : 1;	//0 = no effect, 1 = Start new measurement
+	uint8_t measurement_mode 	: 2;	//00 = Measurement Mode 1 (which we want), 01 = Mode 2,  10/11 = Reserved
+	uint8_t start_edge				: 1;	//0 = measure starts on RISING edge of START signal, 1 = FALLing edge
+	uint8_t stop_edge					: 1;	//...
 	uint8_t trigger_edge			: 1;
 	uint8_t parity_enable			: 1;
 	uint8_t force_calibration :	1;	//bit index 7
 } TDC7200_ConfigReg1_t;
 
-TDC7200_ConfigReg1_t* const TDC7200_CONFIG_REG1 = (TDC7200_ConfigReg1_t*)0x00;
+typedef struct
+{
+	uint8_t number_of_stops 			: 3;
+	uint8_t average_cycles				: 3;
+	uint8_t calibration2_periods	: 2;
+}TDC7200_ConfigReg2_t;
+
+typedef struct
+{
+	uint8_t new_measure_int					: 1;
+	uint8_t course_counter_ovf_int	: 1;
+	uint8_t clock_counter_ovf_int		: 1;
+	uint8_t measure_started_flag		: 1;
+	uint8_t measure_complete_flag		: 1;
+	uint8_t reserved								: 3;
+
+} TDC7200_IntStatusReg_t;
+
+typedef struct
+{
+	uint8_t new_measure_mask				: 1;
+	uint8_t coarse_counter_ovf_mask	: 1;
+	uint8_t clock_counter_ovf_mask	: 1;
+	uint8_t reserved								: 5;
+} TDC7200_IntMaskReg_t;
+
+typedef struct
+{
+	uint8_t coarse_counter_ovf_H 		: 8;
+} TDC7200_CoarseCounterOVF_H_Reg_t;
+
+typedef struct
+{
+	uint8_t coarse_counter_ovf_L 		: 8;
+} TDC7200_CoarseCounterOVF_L_Reg_t;
+
+typedef struct
+{
+	uint8_t clock_counter_ovf_H 		: 8;
+} TDC7200_ClockCounterOVF_H_Reg_t;
+
+typedef struct
+{
+	uint8_t clock_counter_ovf_L 		: 8;
+} TDC7200_ClockCounterOVF_L_Reg_t;
+
+typedef struct
+{
+	uint8_t clock_counter_stop_mask_H	: 8;
+} TDC7200_ClockCounterStopMask_H_Reg_t;
+
+typedef struct
+{
+	uint8_t clock_counter_stop_mask_L	: 8;
+} TDC7200_ClockCounterStopMask_L_Reg_t;
+
+// ^^^^^^ These 10 registers are read/write capable. ^^^^^^
+//The remaining 10 registers in the datasheet are read-only, so no abstraction code written for those
+
+
+
+
+volatile TDC7200_ConfigReg1_t* const TDC7200_CONFIG_REG1 				= (TDC7200_ConfigReg1_t*)TDC_CONFIG1;
+volatile TDC7200_ConfigReg2_t* const TDC7200_CONFIG_REG2 				= (TDC7200_ConfigReg2_t*)TDC_CONFIG2;
+volatile TDC7200_IntStatusReg_t* const TDC7200_INT_STATUS_REG 	= (TDC7200_IntStatusReg_t*)TDC_INT_STATUS;
+volatile TDC7200_IntMaskReg_t* const TDC7200_INT_MASK_REG				= (TDC7200_IntMaskReg_t*)TDC_INT_MASK;
+
+volatile TDC7200_CoarseCounterOVF_H_Reg_t* const TDC7200_COARSE_CNTR_OVF_H_REG =
+													(TDC7200_CoarseCounterOVF_H_Reg_t*)TDC_COARSE_CNTR_OVF_H;
+
+volatile TDC7200_CoarseCounterOVF_L_Reg_t* const TDC7200_COARSE_CNTR_OVF_L_REG =
+													(TDC7200_CoarseCounterOVF_L_Reg_t*)TDC_COARSE_CNTR_OVF_L;
+
+volatile TDC7200_ClockCounterOVF_H_Reg_t* const TDC7200_CLOCK_CNTR_OVF_H_REG =
+													(TDC7200_ClockCounterOVF_H_Reg_t*)TDC_CLK_CNTR_OVF_H;
+
+volatile TDC7200_ClockCounterOVF_L_Reg_t* const TDC7200_CLOCK_CNTR_OVF_L_REG =
+													(TDC7200_ClockCounterOVF_L_Reg_t*)TDC_CLK_CNTR_OVF_L;
+
+volatile TDC7200_ClockCounterStopMask_H_Reg_t* const TDC7200_CLOCK_CNTR_STOP_MASK_H_REG =
+													(TDC7200_ClockCounterStopMask_H_Reg_t*)TDC_CLK_CNTR_STOP_MASK_H;
+
+volatile TDC7200_ClockCounterStopMask_L_Reg_t* const TDC7200_CLOCK_CNTR_STOP_MASK_L_REG =
+													(TDC7200_ClockCounterStopMask_L_Reg_t*)TDC_CLK_CNTR_STOP_MASK_L;
+
 
 
 //Functions
