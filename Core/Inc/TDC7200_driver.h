@@ -43,10 +43,24 @@
 #define TDC_CALIBRATION1					0X1B
 #define TDC_CALIBRATION2					0X1C
 
+//Register Structures to make low-level TDC configurations easier/faster ~~ABSTRACTION~~
+typedef struct
+{
+	uint8_t start_measurement : 1;	//bit index 0
+	uint8_t measurement_mode 	: 2;
+	uint8_t start_edge				: 1;
+	uint8_t stop_edge					: 1;
+	uint8_t trigger_edge			: 1;
+	uint8_t parity_enable			: 1;
+	uint8_t force_calibration :	1;	//bit index 7
+} TDC7200_ConfigReg1_t;
+
+TDC7200_ConfigReg1_t* const TDC7200_CONFIG_REG1 = (TDC7200_ConfigReg1_t*)0x00;
+
 
 //Functions
 void TDC7200_StartMeasure(void);
-void TDC7200_WriteRegister(uint8_t reg, uint8_t txData);
+uint8_t TDC7200_WriteRegister(uint8_t reg, uint8_t txData);
 void TDC7200_ReadRegister(uint8_t reg, uint8_t rxData);
 double TDC7200_ReadBytes(uint8_t numOfBytes, uint8_t readOpCode);
 
