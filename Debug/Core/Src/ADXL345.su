@@ -1,5 +1,10 @@
-../Core/Src/ADXL345.c:11:9:ADXL345_Init	24	static
-../Core/Src/ADXL345.c:62:19:ADXL345_ReadAccel	40	static
-../Core/Src/ADXL345.c:87:19:ADXL345_ReadRegister	40	static
-../Core/Src/ADXL345.c:92:19:ADXL345_ReadRegisters	40	static
-../Core/Src/ADXL345.c:99:19:ADXL345_WriteRegister	40	static
+../Core/Src/ADXL345.c:14:9:ADXL345_Init_I2C	24	static
+../Core/Src/ADXL345.c:62:19:ADXL345_ReadAccel_I2C	40	static
+../Core/Src/ADXL345.c:85:19:ADXL345_ReadRegister_I2C	40	static
+../Core/Src/ADXL345.c:90:19:ADXL345_ReadRegisters_I2C	40	static
+../Core/Src/ADXL345.c:96:19:ADXL345_WriteRegister_I2C	40	static
+../Core/Src/ADXL345.c:106:9:ADXL345_Init_SPI	24	static
+../Core/Src/ADXL345.c:138:6:ADXL345_ReadRegister_SPI	24	static
+../Core/Src/ADXL345.c:154:6:ADXL345_WriteRegister_SPI	24	static
+../Core/Src/ADXL345.c:168:6:ADXL345_ReadAccel_SPI	40	static
+../Core/Src/ADXL345.c:188:6:ADXL345_ReadRegisters_SPI	24	static

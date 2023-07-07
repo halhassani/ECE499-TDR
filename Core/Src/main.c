@@ -123,7 +123,7 @@ int main(void)
 	SSD1306_Clear();
 
 
-	ADXL345_Init(&accelDevice, &hi2c1);
+	ADXL345_Init_SPI(&accelDevice, &hspi1);
 
   /* USER CODE END 2 */
 
@@ -135,11 +135,9 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-		ADXL345_ReadAccel(&accelDevice);
-
+		ADXL345_ReadAccel_SPI(&accelDevice);
 
 		SSD1306_Clear();
-
 
 		SSD1306_GotoXY(38, 0);
 		SSD1306_Puts(" TDR ", &Font_11x18, 0);
