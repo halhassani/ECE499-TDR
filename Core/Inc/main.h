@@ -58,14 +58,22 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define TDC7200_Pin GPIO_PIN_9
-#define TDC7200_GPIO_Port GPIOA
+#define TDC7200_EN_Pin GPIO_PIN_0
+#define TDC7200_EN_GPIO_Port GPIOF
+#define PULSE_SIG_IN_Pin GPIO_PIN_0
+#define PULSE_SIG_IN_GPIO_Port GPIOB
+#define ADXL345_Pin GPIO_PIN_9
+#define ADXL345_GPIO_Port GPIOA
+#define TDC7200_CS_Pin GPIO_PIN_11
+#define TDC7200_CS_GPIO_Port GPIOA
+#define TDC7200_INT_Pin GPIO_PIN_12
+#define TDC7200_INT_GPIO_Port GPIOA
 #define T_SWDIO_Pin GPIO_PIN_13
 #define T_SWDIO_GPIO_Port GPIOA
 #define T_SWCLK_Pin GPIO_PIN_14
 #define T_SWCLK_GPIO_Port GPIOA
-#define ADXL345_Pin GPIO_PIN_6
-#define ADXL345_GPIO_Port GPIOB
+#define TDC7200_TRIG_Pin GPIO_PIN_6
+#define TDC7200_TRIG_GPIO_Port GPIOB
 #define LD2_Pin GPIO_PIN_8
 #define LD2_GPIO_Port GPIOB
 
