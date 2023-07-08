@@ -43,154 +43,89 @@
 #define TDC_CALIBRATION1					0X1B
 #define TDC_CALIBRATION2					0X1C
 
-
-//Bitfield defines for individual bits in various registers
-#define BIT_SET										(1<<0)
-#define BIT_RESET									(0<<0)
-
+//Bitfield definitions/macros
 /***************** ConfigReg_1 ******************/
-#define MEASURE_MODE_1						BIT_RESET
-#define START_MEASUREMENT					BIT_SET
+#define START_MEASUREMENT					(1<<0) //Start New Measurement. Writing a 1 will clear all bits in the Interrupt Status
+																				 //Register and Start the measurement (by generating an TRIGG signal) and will
+																				 //reset the content of all Measurement Results registers (TIME1 to TIME6,
+																				 //CLOCK_COUNT1 to CLOCK_COUNT5, CALIBRATION1, CALIBRATION2) to 0.
+																				 //Writing 0 to this bit has no effect.
 
-#define START_EDGE_RISING					BIT_RESET
-#define START_EDGE_FALLING				BIT_SET
 
-#define STOP_EDGE_RISING					BIT_RESET
-#define STOP_EDGE_FALLING					BIT_SET
+#define MEASURE_MODE_1						((0<<1) | (0<<2)) //we using Measurement Mode 1 (recommended for < 500ns timings)
+#define MEASURE_MODE_2						((1<<1) | (0<<2))
 
-#define TRIGG_EDGE_RISING					BIT_RESET
-#define TRIGG_EDGE_FALLING				BIT_SET
+#define START_EDGE_RISING					(0<<3) //Measurement is started on Rising edge of START signal
+#define START_EDGE_FALLING				(1<<3) //Measurement is started on Falling edge of START signal
+
+#define STOP_EDGE_RISING					(0<<4) //Measurement is stopped on Rising edge of STOP signal
+#define STOP_EDGE_FALLING					(1<<4) //Measurement is stopped on Falling edge of STOP signal
+
+#define TRIGG_EDGE_RISING					(0<<5) //TRIGG is output as a Rising edge signal
+#define TRIGG_EDGE_FALLING				(1<<5) //TRIGG is output as a Falling edge signal
+
+#define PARITY_DISABLED						(0<<6) //Parity bit for Measurement Result Registers* disabled (Parity Bit always 0)
+#define PARITY_ENABLED						(1<<6) //Parity bit for Measurement Result Registers enabled (Even Parity)
+
+#define FORCE_CALIBRATION_OFF			(0<<7) //Calibration is not performed after interrupted measurement
+																				//(Ex: due to counter overflow or missing STOP signal)
+
+#define FORCE_CALIBRATION_ON			(1<<7) //Calibration is always performed at the end
+																				//(Ex: after a counter overflow)
+
 /************************************************/
 /************************************************/
-
+/************************************************/
+/************************************************/
 
 /***************** ConfigReg_2 ******************/
-#define NUM_STOP_SINGLE						0
-#define NUM_STOP_TWO							1
-#define NUM_STOP_THREE						2
-#define NUM_STOP_FOUR							3
-#define NUM_STOP_FIVE							4
+#define NUM_STOP_SINGLE				((0<<2) | (0<<1) | (0<<0)) //Single Stop
+#define NUM_STOP_TWO					((0<<2) | (0<<1) | (1<<0)) //Two Stops
+#define NUM_STOP_THREE				((0<<2) | (1<<1) | (0<<0)) //Three Stops .. etc
+#define NUM_STOP_FOUR					((0<<2) | (1<<1) | (1<<0))
+#define NUM_STOP_FIVE					((1<<2) | (0<<1) | (0<<0))
+//bit combinations 101, 110, 111 have no effect, defaults to Single Stop mode
 
-#define AVG_CYCLES_1							0
-#define AVG_CYCLES_2							1
-#define AVG_CYCLES_4							2
-#define AVG_CYCLES_8							3
-#define AVG_CYCLES_16							4
-#define AVG_CYCLES_32							5
-#define AVG_CYCLES_64							6
-#define AVG_CYCLES_128						7
+#define AVG_CYCLES_1					((0<<5) | (0<<4) | (0<<3)) // 1 Measurement cycle only (no Multi-Cycle Averaging Mode)
+#define AVG_CYCLES_2					((0<<5) | (0<<4) | (1<<3)) // 2 Measurement cycles
+#define AVG_CYCLES_4					((0<<5) | (1<<4) | (0<<3))
+#define AVG_CYCLES_8					((0<<5) | (1<<4) | (1<<3))
+#define AVG_CYCLES_16					((1<<5) | (0<<4) | (0<<3)) // etc..
+#define AVG_CYCLES_32					((1<<5) | (0<<4) | (1<<3))
+#define AVG_CYCLES_64					((1<<5) | (1<<4) | (0<<3))
+#define AVG_CYCLES_128				((1<<5) | (1<<4) | (1<<3)) // 128 Measurement cycles
 
-#define CALIBRATION2_PERIOD_2				0
-#define CALIBRATION2_PERIOD_10			1
-#define CALIBRATION2_PERIOD_20			2
-#define CALIBRATION2_PERIOD_40			3
+#define CALIBRATION2_PERIOD_2					((0<<7) | (0<<6)) //Calibration 2 - measuring 2 CLOCK periods
+#define CALIBRATION2_PERIOD_10				((0<<7) | (1<<6)) //Calibration 2 - measuring 10 CLOCK periods
+#define CALIBRATION2_PERIOD_20				((1<<7) | (0<<6)) //Calibration 2 - measuring 20 CLOCK periods
+#define CALIBRATION2_PERIOD_40				((1<<7) | (1<<6)) //Calibration 2 - measuring 40 CLOCK periods
 /************************************************/
 /************************************************/
 
+/***************** Interrupt Status Register ******************/
+//If READing bits in these positions = 1: it means int detected from that particular bit/source (0 = no int detected)
+//Writing a 1 in a certain bit position will clear that bits' int status
+#define NEW_MEAS_INT_CLEAR					(1<<0)
+#define COARSE_CNTR_OVF_INT_CLEAR		(1<<1)
+#define CLOCK_CNTR_OVF_INT_CLEAR		(1<<2)
+#define MEAS_STARTED_FLAG_CLEAR			(1<<3)
+#define MEAS_COMPLETE_FLAG_CLEAR		(1<<4) //same int info as NEW_MEAS_INT bit flag ^
+/************************************************/
+/************************************************/
 
+/***************** Interrupt Mask Register ******************/
+#define NEW_MEAS_MASK_DISABLED						(0<<0) //New measurement int disabled
+#define NEW_MEAS_MASK_ENABLED							(1<<0) //New measurement int enabled
 
-//Register Structures to make low-level TDC configurations easier/faster ~~ABSTRACTION~~
-typedef struct
-{
-	uint8_t start_measurement : 1;	//0 = no effect, 1 = Start new measurement
-	uint8_t measurement_mode 	: 2;	//00 = Measurement_Mode_1 (which we want), 01 = Mode 2,  10/11 = Reserved
-	uint8_t start_edge				: 1;	//0 = measure starts on RISING edge of START signal, 1 = FALLing edge
-	uint8_t stop_edge					: 1;	//0 = Rising edge, 		1 = Falling edge
-	uint8_t trigger_edge			: 1;	//0 = Rising edge, 		1 = Falling edge
+#define COARSE_CNTR_OVF_MASK_DISABLED			(0<<1) //course counter ovf int disabled
+#define COARSE_CNTR_OVF_MASK_ENABLED			(1<<1) //course counter ovf int enabled
 
-			//0 = Parity bit disabled for MeasurementResultRegisters (TIME1-6, CLK_CNT1-5...etc) ie: Parity bit always 0
-	uint8_t parity_enable			: 1;		//1 = Parity bit enabled (Even parity)
-
-	//0 = Calibration not performed after int. measurement,  1 = calibration always performed at end
-	uint8_t force_calibration :	1;
-} TDC7200_ConfigReg1_t;
-
-typedef struct
-{
-	uint8_t number_of_stops 			: 3;	//datasheet pg.26
-	uint8_t average_cycles				: 3;
-	uint8_t calibration2_periods	: 2;
-}TDC7200_ConfigReg2_t;
-
-typedef struct
-{
-	uint8_t new_measure_int					: 1;	//datasheet pg.27
-	uint8_t course_counter_ovf_int	: 1;
-	uint8_t clock_counter_ovf_int		: 1;
-	uint8_t measure_started_flag		: 1;
-	uint8_t measure_complete_flag		: 1;
-	uint8_t reserved								: 3;
-
-} TDC7200_IntStatusReg_t;
-
-typedef struct
-{
-	uint8_t new_measure_mask				: 1;	//datasheet pg.28
-	uint8_t coarse_counter_ovf_mask	: 1;
-	uint8_t clock_counter_ovf_mask	: 1;
-	uint8_t reserved								: 5;
-} TDC7200_IntMaskReg_t;
-
-typedef struct
-{
-	uint8_t coarse_counter_ovf_H 		: 8;	//Coarse Counter Overflow Value, upper 8 Bit ("High" byte)
-} TDC7200_CoarseCounterOVF_H_Reg_t;
-
-typedef struct
-{
-	uint8_t coarse_counter_ovf_L 		: 8;	//Coarse Counter Overflow Value, lower 8 Bit ("Low" byte)
-} TDC7200_CoarseCounterOVF_L_Reg_t;
-
-typedef struct
-{
-	uint8_t clock_counter_ovf_H 		: 8;	//CLOCK Counter Overflow_Value, UPPER 8 Bit ("High" byte)
-} TDC7200_ClockCounterOVF_H_Reg_t;
-
-typedef struct
-{
-	uint8_t clock_counter_ovf_L 		: 8;	//CLOCK Counter Overflow_Value, LOWER 8 Bit ("Low" byte)
-} TDC7200_ClockCounterOVF_L_Reg_t;
-
-typedef struct
-{
-	uint8_t clock_counter_stop_mask_H	: 8;	//CLOCK Counter STOP_Mask, UPPER 8 Bit ("High" byte)
-} TDC7200_ClockCounterStopMask_H_Reg_t;
-
-typedef struct
-{
-	uint8_t clock_counter_stop_mask_L	: 8;	//CLOCK Counter STOP_Mask, LOWER 8 Bit ("Low" byte)
-} TDC7200_ClockCounterStopMask_L_Reg_t;
-
-// ^^^^^^ These 10 registers are read/write capable. ^^^^^^
-//The remaining 10 registers in the datasheet are read-only, so no abstraction code written for those.
-
-
-
-
-volatile TDC7200_ConfigReg1_t* const TDC7200_CONFIG_REG1 				= (TDC7200_ConfigReg1_t*)TDC_CONFIG1;
-volatile TDC7200_ConfigReg2_t* const TDC7200_CONFIG_REG2 				= (TDC7200_ConfigReg2_t*)TDC_CONFIG2;
-volatile TDC7200_IntStatusReg_t* const TDC7200_INT_STATUS_REG 	= (TDC7200_IntStatusReg_t*)TDC_INT_STATUS;
-volatile TDC7200_IntMaskReg_t* const TDC7200_INT_MASK_REG				= (TDC7200_IntMaskReg_t*)TDC_INT_MASK;
-
-volatile TDC7200_CoarseCounterOVF_H_Reg_t* const TDC7200_COARSE_CNTR_OVF_H_REG =
-													(TDC7200_CoarseCounterOVF_H_Reg_t*)TDC_COARSE_CNTR_OVF_H;
-
-volatile TDC7200_CoarseCounterOVF_L_Reg_t* const TDC7200_COARSE_CNTR_OVF_L_REG =
-													(TDC7200_CoarseCounterOVF_L_Reg_t*)TDC_COARSE_CNTR_OVF_L;
-
-volatile TDC7200_ClockCounterOVF_H_Reg_t* const TDC7200_CLOCK_CNTR_OVF_H_REG =
-													(TDC7200_ClockCounterOVF_H_Reg_t*)TDC_CLK_CNTR_OVF_H;
-
-volatile TDC7200_ClockCounterOVF_L_Reg_t* const TDC7200_CLOCK_CNTR_OVF_L_REG =
-													(TDC7200_ClockCounterOVF_L_Reg_t*)TDC_CLK_CNTR_OVF_L;
-
-volatile TDC7200_ClockCounterStopMask_H_Reg_t* const TDC7200_CLOCK_CNTR_STOP_MASK_H_REG =
-													(TDC7200_ClockCounterStopMask_H_Reg_t*)TDC_CLK_CNTR_STOP_MASK_H;
-
-volatile TDC7200_ClockCounterStopMask_L_Reg_t* const TDC7200_CLOCK_CNTR_STOP_MASK_L_REG =
-													(TDC7200_ClockCounterStopMask_L_Reg_t*)TDC_CLK_CNTR_STOP_MASK_L;
-
-
+#define CLOCK_CNTR_OVF_MASK_DISABLED			(0<<2) //CLOCK counter ovf int disabled
+#define CLOCK_CNTR_OVF_MASK_ENABLED				(1<<2) //CLOCK counter ovf int disabled
+/************************************************/
+/************************************************/
+/************************************************/
+/************************************************/
 
 //Functions
 void TDC7200_StartMeasure(void);
