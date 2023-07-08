@@ -45,6 +45,7 @@
         "silk_text_thickness": 0.15,
         "silk_text_upright": false,
         "zones": {
+          "45_degree_only": false,
           "min_clearance": 0.5
         }
       },
@@ -55,7 +56,12 @@
           "width": 0.0
         }
       ],
-      "drc_exclusions": [],
+      "drc_exclusions": [
+        "lib_footprint_mismatch|111506000|101854000|2f6f51f5-ac43-47bf-aced-f00c00398666|00000000-0000-0000-0000-000000000000",
+        "lib_footprint_mismatch|136144000|106172000|3103a91a-b3a8-4be0-a12c-60ff31d3019b|00000000-0000-0000-0000-000000000000",
+        "silk_edge_clearance|114794000|68876000|22db2ea1-eaa0-4f59-9306-ce723ad1577e|40c69c28-4c4d-4065-a2cb-c37d79e0d6bc",
+        "silk_over_copper|130465863|95174000|1bc631a1-e634-43d5-a191-bdcd813e6a38|00000000-0000-0000-0000-000000000000"
+      ],
       "meta": {
         "version": 2
       },
@@ -110,6 +116,8 @@
         "zones_intersect": "error"
       },
       "rules": {
+        "allow_blind_buried_vias": false,
+        "allow_microvias": false,
         "max_error": 0.005,
         "min_clearance": 0.15239999999999998,
         "min_connection": 0.15239999999999998,
@@ -197,7 +205,8 @@
           "drill": 1.0
         }
       ],
-      "zones_allow_external_fillets": false
+      "zones_allow_external_fillets": false,
+      "zones_use_no_outline": true
     },
     "layer_presets": [],
     "viewports": []
@@ -450,12 +459,7 @@
     },
     "net_colors": null,
     "netclass_assignments": null,
-    "netclass_patterns": [
-      {
-        "netclass": "Default",
-        "pattern": "GND"
-      }
-    ]
+    "netclass_patterns": []
   },
   "pcbnew": {
     "last_paths": {
