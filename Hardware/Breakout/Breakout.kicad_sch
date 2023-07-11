@@ -3270,7 +3270,7 @@
     (property "Value" "BUF602ID" (at 154.94 110.49 0)
       (effects (font (size 1.524 1.524)))
     )
-    (property "Footprint" "BUF602ID:D0008A_N" (at 154.94 125.73 0)
+    (property "Footprint" "SOIC127P600X175-8N:SOIC127P600X175-8N" (at 154.94 125.73 0)
       (effects (font (size 1.27 1.27) italic) hide)
     )
     (property "Datasheet" "BUF602ID" (at 154.94 125.73 0)
