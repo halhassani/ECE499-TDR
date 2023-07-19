@@ -1,1 +1,2 @@
 ../Core/Src/TDC7200_driver.c:14:9:TDC7200_WriteRegister	24	static
+../Core/Src/TDC7200_driver.c:39:8:TDC7200_Read_N_Registers	40	static

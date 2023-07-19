@@ -75,9 +75,6 @@
 							<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.objcopy.symbolsrec.444409814" name="MCU Output Converter Motorola S-rec with symbols" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.objcopy.symbolsrec"/>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.2117475747.1883234928" name="backupJuicerTDC.c" rcbsApplicability="disable" resourcePath="Core/Src/backupJuicerTDC.c" toolsToInvoke="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.595129955.364000519">
-						<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.595129955.364000519" name="MCU GCC Compiler" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.595129955"/>
-					</fileInfo>
 					<fileInfo id="com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.2117475747.1489094970" name="backupJuicerTDC.h" rcbsApplicability="disable" resourcePath="Core/Inc/backupJuicerTDC.h" toolsToInvoke=""/>
 					<sourceEntries>
 						<entry excluding="Src/backupJuicerTDC.c|Inc/backupJuicerTDC.h" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
