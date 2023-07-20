@@ -114,13 +114,27 @@ int main(void)
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
 
-	SSD1306_Init();
-	OLED_Startup();
-	HAL_Delay(2000);
-	SSD1306_Clear();
+//	SSD1306_Init();
+//	OLED_Startup();
+//	HAL_Delay(2000);
+//	SSD1306_Clear();
+
+  HAL_GPIO_WritePin(TDC7200_EN_GPIO_Port, TDC7200_EN_Pin, 1);
+  HAL_Delay(250);
+  HAL_GPIO_WritePin(TDC7200_EN_GPIO_Port, TDC7200_EN_Pin, 0);
+  HAL_Delay(250);
+	uint8_t juice = TDC_READ_CMD | MEASURE_MODE_2 | START_EDGE_RISING | STOP_EDGE_FALLING;
+  HAL_GPIO_WritePin(TDC7200_EN_GPIO_Port, TDC7200_EN_Pin, 1);
+
+  //HAL_Delay(500);
+	TDC7200_WriteRegister(TDC_CONFIG1, &juice);
+  //HAL_Delay(500);
+  double idk = 99;
+  idk = TDC7200_Read_N_Registers(TDC_CONFIG2, 1);
+ //HAL_Delay(500);
 
 
-	ADXL345_Init_SPI(&accelDevice, &hspi1);
+	//ADXL345_Init_SPI(&accelDevice, &hspi1);
 
   /* USER CODE END 2 */
 
@@ -132,26 +146,26 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-		ADXL345_ReadAccel_SPI(&accelDevice);
+		//ADXL345_ReadAccel_SPI(&accelDevice);
 
-		SSD1306_Clear();
-
-		SSD1306_GotoXY(38, 0);
-		SSD1306_Puts(" TDR ", &Font_11x18, 0);
-
-		SSD1306_GotoXY(0, 24);
-		sprintf(buff, "X: %0.2f", accelDevice.acc_mps2[0]);
-		SSD1306_Puts(buff, &Font_7x10, 1);
-
-		SSD1306_GotoXY(0, 36);
-		sprintf(buff, "Y: %0.2f", accelDevice.acc_mps2[1]);
-		SSD1306_Puts(buff, &Font_7x10, 1);
-
-		SSD1306_GotoXY(0, 48);
-		sprintf(buff, "Z: %0.2f", accelDevice.acc_mps2[2]);
-		SSD1306_Puts(buff, &Font_7x10, 1);
-
-		SSD1306_UpdateScreen();
+//		SSD1306_Clear();
+//
+//		SSD1306_GotoXY(38, 0);
+//		SSD1306_Puts(" TDR ", &Font_11x18, 0);
+//
+//		SSD1306_GotoXY(0, 24);
+//		sprintf(buff, "X: %0.2f", accelDevice.acc_mps2[0]);
+//		SSD1306_Puts(buff, &Font_7x10, 1);
+//
+//		SSD1306_GotoXY(0, 36);
+//		sprintf(buff, "Y: %0.2f", accelDevice.acc_mps2[1]);
+//		SSD1306_Puts(buff, &Font_7x10, 1);
+//
+//		SSD1306_GotoXY(0, 48);
+//		sprintf(buff, "Z: %0.2f", accelDevice.acc_mps2[2]);
+//		SSD1306_Puts(buff, &Font_7x10, 1);
+//
+//		SSD1306_UpdateScreen();
 
 		HAL_Delay(1000);
 

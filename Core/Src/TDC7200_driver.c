@@ -62,7 +62,7 @@ double TDC7200_Read_N_Registers(uint8_t regToRead, uint8_t n)
 		return -1;
 
 	//Rx data via SPI API, if SPI rxn fails (ie: != HAL_OK), return -1
-	if((HAL_SPI_Receive(&hspi1, rxSpiData, n, HAL_MAX_DELAY)) != HAL_OK)
+	if((HAL_SPI_Receive(&hspi1, rxSpiData, n, 2000)) != HAL_OK)
 		return -1;
 
 
