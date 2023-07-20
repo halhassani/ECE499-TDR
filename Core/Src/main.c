@@ -120,6 +120,7 @@ int main(void)
 //	SSD1306_Clear();
 
   HAL_GPIO_WritePin(TDC7200_EN_GPIO_Port, TDC7200_EN_Pin, 1);
+  HAL_GPIO_WritePin(TDC7200_CS_GPIO_Port, TDC7200_CS_Pin, 1);
   HAL_Delay(250);
   HAL_GPIO_WritePin(TDC7200_EN_GPIO_Port, TDC7200_EN_Pin, 0);
   HAL_Delay(250);
