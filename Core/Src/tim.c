@@ -28,7 +28,6 @@ TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim6;
 TIM_HandleTypeDef htim7;
-DMA_HandleTypeDef hdma_tim2_up;
 
 /* TIM2 init function */
 void MX_TIM2_Init(void)
@@ -191,25 +190,6 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* tim_baseHandle)
   /* USER CODE END TIM2_MspInit 0 */
     /* TIM2 clock enable */
     __HAL_RCC_TIM2_CLK_ENABLE();
-
-    /* TIM2 DMA Init */
-    /* TIM2_UP Init */
-    hdma_tim2_up.Instance = DMA1_Channel2;
-    hdma_tim2_up.Init.Request = DMA_REQUEST_TIM2_UP;
-    hdma_tim2_up.Init.Direction = DMA_PERIPH_TO_MEMORY;
-    hdma_tim2_up.Init.PeriphInc = DMA_PINC_DISABLE;
-    hdma_tim2_up.Init.MemInc = DMA_MINC_ENABLE;
-    hdma_tim2_up.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
-    hdma_tim2_up.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
-    hdma_tim2_up.Init.Mode = DMA_NORMAL;
-    hdma_tim2_up.Init.Priority = DMA_PRIORITY_LOW;
-    if (HAL_DMA_Init(&hdma_tim2_up) != HAL_OK)
-    {
-      Error_Handler();
-    }
-
-    __HAL_LINKDMA(tim_baseHandle,hdma[TIM_DMA_ID_UPDATE],hdma_tim2_up);
-
   /* USER CODE BEGIN TIM2_MspInit 1 */
 
   /* USER CODE END TIM2_MspInit 1 */
@@ -259,9 +239,6 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
   /* USER CODE END TIM2_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_TIM2_CLK_DISABLE();
-
-    /* TIM2 DMA DeInit */
-    HAL_DMA_DeInit(tim_baseHandle->hdma[TIM_DMA_ID_UPDATE]);
   /* USER CODE BEGIN TIM2_MspDeInit 1 */
 
   /* USER CODE END TIM2_MspDeInit 1 */

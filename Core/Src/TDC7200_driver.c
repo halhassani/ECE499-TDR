@@ -62,7 +62,7 @@ double TDC7200_Read_N_Registers(uint8_t regToRead, uint8_t n)
 		return -1;
 
 	//Rx data via SPI API, if SPI rxn fails (ie: != HAL_OK), return -1
-	if((HAL_SPI_Receive(&hspi1, rxSpiData, n, 2000)) != HAL_OK)
+	if((HAL_SPI_Receive(&hspi1, rxSpiData, n, HAL_MAX_DELAY)) != HAL_OK)
 		return -1;
 
 
@@ -78,4 +78,11 @@ double TDC7200_Read_N_Registers(uint8_t regToRead, uint8_t n)
 	return finalResult;
 }
 
-double TDC7200_ReadBytes(uint8_t reg, uint8_t txData);
+void TDC7200_startMeasurement(void)
+{
+	uint8_t address[2] = {40, 43};
+
+	HAL_GPIO_WritePin(TDC7200_CS_GPIO_Port, TDC7200_CS_Pin, GPIO_PIN_RESET);
+	HAL_SPI_Transmit(&hspi1, address, 2, HAL_MAX_DELAY);
+	HAL_GPIO_WritePin(TDC7200_CS_GPIO_Port, TDC7200_CS_Pin, GPIO_PIN_SET);
+}

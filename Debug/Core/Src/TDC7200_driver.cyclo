@@ -1,2 +1,3 @@
 TDC7200_driver.c:14:9:TDC7200_WriteRegister	2
 TDC7200_driver.c:39:8:TDC7200_Read_N_Registers	6
+TDC7200_driver.c:81:6:TDC7200_startMeasurement	1

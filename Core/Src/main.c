@@ -18,8 +18,6 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "dac.h"
-#include "dma.h"
 #include "i2c.h"
 #include "spi.h"
 #include "tim.h"
@@ -99,14 +97,13 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-
+    GPIOB->MODER &= ~GPIO_MODER_MODE4_Msk;
+    GPIOB->MODER |= GPIO_MODER_MODE4_0;
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_DMA_Init();
   MX_I2C1_Init();
-  MX_DAC1_Init();
   MX_TIM6_Init();
   MX_TIM7_Init();
   MX_TIM3_Init();
@@ -114,21 +111,24 @@ int main(void)
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
 
-//	SSD1306_Init();
-//	OLED_Startup();
-//	HAL_Delay(2000);
-//	SSD1306_Clear();
 
-  HAL_GPIO_WritePin(TDC7200_EN_GPIO_Port, TDC7200_EN_Pin, 1);
-  HAL_GPIO_WritePin(TDC7200_CS_GPIO_Port, TDC7200_CS_Pin, 1);
-  HAL_Delay(250);
+	SSD1306_Init();
+	OLED_Startup();
+	HAL_Delay(2000);
+	SSD1306_Clear();
+
+
+  HAL_Delay(1000);
   HAL_GPIO_WritePin(TDC7200_EN_GPIO_Port, TDC7200_EN_Pin, 0);
-  HAL_Delay(250);
-	uint8_t juice = TDC_READ_CMD | MEASURE_MODE_2 | START_EDGE_RISING | STOP_EDGE_FALLING;
+  HAL_Delay(1000);
   HAL_GPIO_WritePin(TDC7200_EN_GPIO_Port, TDC7200_EN_Pin, 1);
+
+	//uint8_t juice = TDC_READ_CMD | MEASURE_MODE_2 | START_EDGE_RISING | STOP_EDGE_FALLING;
 
   //HAL_Delay(500);
-	TDC7200_WriteRegister(TDC_CONFIG1, &juice);
+	//TDC7200_startMeasurement();
+
+	//TDC7200_WriteRegister(TDC_CONFIG1, &juice);
   //HAL_Delay(500);
   double idk = 99;
   idk = TDC7200_Read_N_Registers(TDC_CONFIG2, 1);
@@ -137,6 +137,14 @@ int main(void)
 
 	//ADXL345_Init_SPI(&accelDevice, &hspi1);
 
+  //testing juicer for MISO pin -- MISO PIN PB4 WORKS CORRECTLY CONFIRMED
+//  GPIOB->MODER &= ~GPIO_MODER_MODE4_Msk;
+//  GPIOB->MODER |= GPIO_MODER_MODE4_0;
+//  GPIOB->BSRR = 1 << 4; 	//set to 1
+//  GPIOB->BSRR = 1 << 20; 	//set to 0
+//  GPIOB->BSRR = 1 << 4; 	//set to 1
+
+  uint8_t incr = 0;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -148,27 +156,24 @@ int main(void)
     /* USER CODE BEGIN 3 */
 
 		//ADXL345_ReadAccel_SPI(&accelDevice);
+		TDC7200_startMeasurement();
 
-//		SSD1306_Clear();
-//
-//		SSD1306_GotoXY(38, 0);
-//		SSD1306_Puts(" TDR ", &Font_11x18, 0);
-//
-//		SSD1306_GotoXY(0, 24);
-//		sprintf(buff, "X: %0.2f", accelDevice.acc_mps2[0]);
-//		SSD1306_Puts(buff, &Font_7x10, 1);
-//
-//		SSD1306_GotoXY(0, 36);
-//		sprintf(buff, "Y: %0.2f", accelDevice.acc_mps2[1]);
-//		SSD1306_Puts(buff, &Font_7x10, 1);
-//
-//		SSD1306_GotoXY(0, 48);
-//		sprintf(buff, "Z: %0.2f", accelDevice.acc_mps2[2]);
-//		SSD1306_Puts(buff, &Font_7x10, 1);
-//
-//		SSD1306_UpdateScreen();
+	  idk = TDC7200_Read_N_Registers((TDC_CONFIG1), 1);
+
+		SSD1306_Clear();
+
+		SSD1306_GotoXY(38, 0);
+		SSD1306_Puts(" TDR ", &Font_11x18, 0);
+
+		SSD1306_GotoXY(0, 36);
+		sprintf(buff, "rxData: %0.2f", idk);
+		SSD1306_Puts(buff, &Font_7x10, 1);
+		SSD1306_UpdateScreen();
 
 		HAL_Delay(1000);
+		TDC7200_startMeasurement();
+		incr++;
+		if(incr > 22) incr = 0;
 
 	}
   /* USER CODE END 3 */
@@ -195,8 +200,8 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV4;
-  RCC_OscInitStruct.PLL.PLLN = 85;
+  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV1;
+  RCC_OscInitStruct.PLL.PLLN = 20;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
   RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;

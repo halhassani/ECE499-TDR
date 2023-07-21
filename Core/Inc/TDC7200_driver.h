@@ -131,6 +131,8 @@
 void TDC7200_StartMeasure(void);
 uint8_t TDC7200_WriteRegister(uint8_t reg, uint8_t* tx_spiData);
 double TDC7200_Read_N_Registers(uint8_t regToRead , uint8_t n);
+void TDC7200_startMeasurement(void);
+
 double TDC7200_ReadBytes(uint8_t numOfBytes, uint8_t readOpCode);
 
 

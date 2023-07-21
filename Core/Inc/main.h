@@ -60,22 +60,26 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define TDC7200_EN_Pin GPIO_PIN_0
 #define TDC7200_EN_GPIO_Port GPIOF
+#define BUTTON1_Pin GPIO_PIN_7
+#define BUTTON1_GPIO_Port GPIOA
 #define PULSE_SIG_IN_Pin GPIO_PIN_0
 #define PULSE_SIG_IN_GPIO_Port GPIOB
+#define TDC7200_INT_Pin GPIO_PIN_8
+#define TDC7200_INT_GPIO_Port GPIOA
 #define ADXL345_Pin GPIO_PIN_9
 #define ADXL345_GPIO_Port GPIOA
 #define TDC7200_CS_Pin GPIO_PIN_11
 #define TDC7200_CS_GPIO_Port GPIOA
-#define TDC7200_INT_Pin GPIO_PIN_12
-#define TDC7200_INT_GPIO_Port GPIOA
+#define BUTTON2_Pin GPIO_PIN_12
+#define BUTTON2_GPIO_Port GPIOA
 #define T_SWDIO_Pin GPIO_PIN_13
 #define T_SWDIO_GPIO_Port GPIOA
 #define T_SWCLK_Pin GPIO_PIN_14
 #define T_SWCLK_GPIO_Port GPIOA
 #define TDC7200_TRIG_Pin GPIO_PIN_6
 #define TDC7200_TRIG_GPIO_Port GPIOB
-#define LD2_Pin GPIO_PIN_8
-#define LD2_GPIO_Port GPIOB
+#define GREEN_LED_Pin GPIO_PIN_8
+#define GREEN_LED_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 
