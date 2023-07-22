@@ -62,8 +62,8 @@ void Error_Handler(void);
 #define TDC7200_EN_GPIO_Port GPIOF
 #define BUTTON1_Pin GPIO_PIN_7
 #define BUTTON1_GPIO_Port GPIOA
-#define PULSE_SIG_IN_Pin GPIO_PIN_0
-#define PULSE_SIG_IN_GPIO_Port GPIOB
+#define PULSE_SIG_Pin GPIO_PIN_0
+#define PULSE_SIG_GPIO_Port GPIOB
 #define TDC7200_INT_Pin GPIO_PIN_8
 #define TDC7200_INT_GPIO_Port GPIOA
 #define ADXL345_Pin GPIO_PIN_9

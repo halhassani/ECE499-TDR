@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dac.h"
 #include "i2c.h"
 #include "spi.h"
 #include "tim.h"
@@ -111,6 +112,7 @@ int main(void)
   MX_TIM3_Init();
   MX_TIM2_Init();
   MX_SPI1_Init();
+  MX_DAC1_Init();
   /* USER CODE BEGIN 2 */
 
   HAL_TIM_Base_Start_IT(&htim2);
@@ -135,11 +137,11 @@ int main(void)
 
   //HAL_Delay(500);
 	//TDC7200_startMeasurement();
+	HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
+	//TDC7200_WriteRegister(TDC_CONFIG1, &juice);
 //
-//	TDC7200_WriteRegister(TDC_CONFIG1, &juice);
-//
-//	juice  |= START_MEASUREMENT;
-//	TDC7200_WriteRegister(TDC_CONFIG1, &juice);
+	//juice  |= START_MEASUREMENT;
+	//TDC7200_WriteRegister(TDC_CONFIG1, &juice);
 
   HAL_Delay(500);
   double idk = 99;
@@ -168,9 +170,11 @@ int main(void)
     /* USER CODE BEGIN 3 */
 
 		//ADXL345_ReadAccel_SPI(&accelDevice);
-		TDC7200_startMeasurement();
+		//TDC7200_startMeasurement();
 		//TDC7200_WriteRegister(TDC_CONFIG1, &juice);
-	  idk = TDC7200_Read_N_Registers((TDC_CONFIG2), 1);
+	  idk = TDC7200_Read_N_Registers((TDC_CONFIG1), 1);
+	  HAL_GPIO_TogglePin(PULSE_SIG_GPIO_Port, PULSE_SIG_Pin);
+	  HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
 
 		SSD1306_Clear();
 
@@ -247,7 +251,7 @@ void SystemClock_Config(void)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	//HAL_GPIO_TogglePin(TDC7200_EN_GPIO_Port, TDC7200_EN_Pin);
-	signalBit = HAL_GPIO_ReadPin(PULSE_SIG_IN_GPIO_Port, PULSE_SIG_IN_Pin);
+	//signalBit = HAL_GPIO_ReadPin(PULSE_SIG_IN_GPIO_Port, PULSE_SIG_IN_Pin);
 }
 
 void OLED_Startup(void)
