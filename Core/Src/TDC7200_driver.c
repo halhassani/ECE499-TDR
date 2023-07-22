@@ -49,7 +49,7 @@ double TDC7200_Read_N_Registers(uint8_t regToRead, uint8_t n)
 
 
 	if (n == 3) //ie: if reading more than 1 byte..(ex: 3), enable auto_incr cmd bit and read cmd bit
-		regAndOpcode = regToRead | TDC_READ_CMD | TDC_AUTO_INCR;
+		regAndOpcode= regToRead | TDC_READ_CMD | TDC_AUTO_INCR;
 
 	else //if reading 1 byte, simply attach read cmd bit, no auto incr
 		regAndOpcode = regToRead | TDC_READ_CMD;
@@ -58,12 +58,13 @@ double TDC7200_Read_N_Registers(uint8_t regToRead, uint8_t n)
 	HAL_GPIO_WritePin(TDC7200_CS_GPIO_Port, TDC7200_CS_Pin, GPIO_PIN_RESET);
 
 	//Tx data via SPI API, if SPI txn fails (ie: != HAL_OK), return -1
-	if((HAL_SPI_Transmit(&hspi1, &regAndOpcode, 1, HAL_MAX_DELAY)) != HAL_OK)
-		return -1;
+	HAL_SPI_Transmit(&hspi1, &regAndOpcode, 1, HAL_MAX_DELAY);
+
 
 	//Rx data via SPI API, if SPI rxn fails (ie: != HAL_OK), return -1
-	if((HAL_SPI_Receive(&hspi1, rxSpiData, n, HAL_MAX_DELAY)) != HAL_OK)
-		return -1;
+	HAL_SPI_Receive(&hspi1, rxSpiData, n, HAL_MAX_DELAY);
+
+
 
 
 	if(n == 1)

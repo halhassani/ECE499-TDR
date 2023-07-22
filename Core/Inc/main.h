@@ -72,14 +72,8 @@ void Error_Handler(void);
 #define TDC7200_CS_GPIO_Port GPIOA
 #define BUTTON2_Pin GPIO_PIN_12
 #define BUTTON2_GPIO_Port GPIOA
-#define T_SWDIO_Pin GPIO_PIN_13
-#define T_SWDIO_GPIO_Port GPIOA
-#define T_SWCLK_Pin GPIO_PIN_14
-#define T_SWCLK_GPIO_Port GPIOA
 #define TDC7200_TRIG_Pin GPIO_PIN_6
 #define TDC7200_TRIG_GPIO_Port GPIOB
-#define GREEN_LED_Pin GPIO_PIN_8
-#define GREEN_LED_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

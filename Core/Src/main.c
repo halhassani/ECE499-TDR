@@ -49,6 +49,7 @@
 
 char buff[25];
 ADXL345 accelDevice;
+uint8_t signalBit = 0;
 
 /* USER CODE END PV */
 
@@ -99,6 +100,7 @@ int main(void)
   /* USER CODE BEGIN SysInit */
     GPIOB->MODER &= ~GPIO_MODER_MODE4_Msk;
     GPIOB->MODER |= GPIO_MODER_MODE4_0;
+
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -111,6 +113,7 @@ int main(void)
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
 
+  HAL_TIM_Base_Start_IT(&htim2);
 
 	SSD1306_Init();
 	OLED_Startup();
@@ -122,16 +125,25 @@ int main(void)
   HAL_GPIO_WritePin(TDC7200_EN_GPIO_Port, TDC7200_EN_Pin, 0);
   HAL_Delay(1000);
   HAL_GPIO_WritePin(TDC7200_EN_GPIO_Port, TDC7200_EN_Pin, 1);
+  HAL_Delay(1000);
+  HAL_GPIO_WritePin(TDC7200_EN_GPIO_Port, TDC7200_EN_Pin, 0);
+  HAL_Delay(1000);
+  HAL_GPIO_WritePin(TDC7200_EN_GPIO_Port, TDC7200_EN_Pin, 1);
 
-	//uint8_t juice = TDC_READ_CMD | MEASURE_MODE_2 | START_EDGE_RISING | STOP_EDGE_FALLING;
+
+	uint8_t juice = TDC_WRITE_CMD | MEASURE_MODE_1 | START_EDGE_RISING | STOP_EDGE_FALLING;
 
   //HAL_Delay(500);
 	//TDC7200_startMeasurement();
+//
+//	TDC7200_WriteRegister(TDC_CONFIG1, &juice);
+//
+//	juice  |= START_MEASUREMENT;
+//	TDC7200_WriteRegister(TDC_CONFIG1, &juice);
 
-	//TDC7200_WriteRegister(TDC_CONFIG1, &juice);
-  //HAL_Delay(500);
+  HAL_Delay(500);
   double idk = 99;
-  idk = TDC7200_Read_N_Registers(TDC_CONFIG2, 1);
+  //idk = TDC7200_Read_N_Registers(TDC_CONFIG2, 1);
  //HAL_Delay(500);
 
 
@@ -157,8 +169,8 @@ int main(void)
 
 		//ADXL345_ReadAccel_SPI(&accelDevice);
 		TDC7200_startMeasurement();
-
-	  idk = TDC7200_Read_N_Registers((TDC_CONFIG1), 1);
+		//TDC7200_WriteRegister(TDC_CONFIG1, &juice);
+	  idk = TDC7200_Read_N_Registers((TDC_CONFIG2), 1);
 
 		SSD1306_Clear();
 
@@ -168,10 +180,15 @@ int main(void)
 		SSD1306_GotoXY(0, 36);
 		sprintf(buff, "rxData: %0.2f", idk);
 		SSD1306_Puts(buff, &Font_7x10, 1);
+
+		SSD1306_GotoXY(0, 48);
+		sprintf(buff, "PulseSig: %d", signalBit);
+		SSD1306_Puts(buff, &Font_7x10, 1);
+
 		SSD1306_UpdateScreen();
 
 		HAL_Delay(1000);
-		TDC7200_startMeasurement();
+		//TDC7200_startMeasurement();
 		incr++;
 		if(incr > 22) incr = 0;
 
@@ -227,6 +244,11 @@ void SystemClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+	//HAL_GPIO_TogglePin(TDC7200_EN_GPIO_Port, TDC7200_EN_Pin);
+	signalBit = HAL_GPIO_ReadPin(PULSE_SIG_IN_GPIO_Port, PULSE_SIG_IN_Pin);
+}
 
 void OLED_Startup(void)
 {
