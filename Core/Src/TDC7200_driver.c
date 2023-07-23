@@ -197,6 +197,11 @@ void myTDC_CalculateTime(double* pData)
 	*pData = (	(*pData) * normLSB	);
 }
 
+void myTDC_CableLength(double* pLength)
+{
+	double cablePropogationVel = (0.71 * 299792458.0L);
+	*pLength = cablePropogationVel * (*pLength);
+}
 
 
 void myTDC_StartMeasurement(void)

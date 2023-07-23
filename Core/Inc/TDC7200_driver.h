@@ -148,6 +148,7 @@ uint32_t TDC7200_Read_N_Registers(uint8_t regToRead , uint8_t n);
 uint8_t myTDC_ReadInterruptRegister(void);
 void myTDC_CalculateTime(double* );
 void myTDC_StartMeasurement(void);
+void myTDC_CableLength(double* );
 void myTDC_EnablePowerOn(void);
 void myTDC_Init(void);
 

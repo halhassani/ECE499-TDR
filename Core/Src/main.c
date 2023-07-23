@@ -48,7 +48,7 @@
 
 /* USER CODE BEGIN PV */
 
-char buff[25];
+char buff[100];
 ADXL345 accelDevice;
 uint8_t gTDC_TrigFlag= 0;
 uint8_t gTDC_IntFlag= 0;
@@ -59,6 +59,7 @@ uint8_t gTDC_IntFlag= 0;
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 void myOLED_Startup(void);
+void myOLED_PrintTDC_Data(double* tdcTime, double* tdcLength);
 void myDAC_init(void);
 
 /* USER CODE END PFP */
@@ -122,8 +123,6 @@ int main(void)
 	SSD1306_Init();		//initialize I2C communication b/w MCU and OLED screen
 	myOLED_Startup(); //prints startup message to OLED screen
 	HAL_Delay(2000);
-	SSD1306_Clear(); //screen clears after 2sec
-
 
 
 	myTDC_EnablePowerOn();	//This fxn toggles TDC_EN pin from 0 to 1 to ensure TDC powers up properly
@@ -133,9 +132,14 @@ int main(void)
 				//(Cuz STM32CubeMX IDE doesn't let you configure DAC to output a simple DC voltage, which we want)
 
 	//HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
-	uint8_t juicerjuice = 0;
-	uint32_t TDC_timeValues = 0;
-	double TDC_convertedTime = 0;
+
+	double totalTime = 0;
+	double TDC_singleConvertedTime = 0;
+	double TDC_convertedTimeAvg = 0;
+
+	double totalLength = 0;
+	double TDC_singleCableLength = 0;
+	double TDC_cableLengthAvg = 0;
 
   /* USER CODE END 2 */
 
@@ -147,48 +151,48 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-		SSD1306_Clear();
+
 		if(HAL_GPIO_ReadPin(BUTTON2_GPIO_Port, BUTTON2_Pin) == 1)
 		{
 			//button debouncing and anti-button-holding-juicer
 			HAL_Delay(100);
 			while(HAL_GPIO_ReadPin(BUTTON2_GPIO_Port, BUTTON2_Pin) == 1); //do nothing, wait here until user releases button
 
+			for(uint8_t itr = 0; itr <= 100; itr++)
+			{
+				myTDC_StartMeasurement(); //MCU will write to TDC configReg to START_MEASUREMENT
+				while(gTDC_TrigFlag == 0); //DO NOTHING, WAIT UNTIL TDC_TRIG PIN TRIGGERS MCU ISR, ie: w8 until TDC rdy
 
-			myTDC_StartMeasurement(); //MCU will write to TDC configReg to START_MEASUREMENT
-			while(gTDC_TrigFlag == 0); //DO NOTHING, WAIT UNTIL TDC_TRIG PIN TRIGGERS MCU ISR, ie: w8 until TDC rdy
+				//SET PULSE SIGNAL TO HIGH (TDC WILL START MEASUREMENT AS SOON AS MCU SETS THIS PULSE SIGNAL HIGH)
+				HAL_GPIO_WritePin(PULSE_SIG_GPIO_Port, PULSE_SIG_Pin, 1);
+				HAL_GPIO_WritePin(PULSE_SIG_GPIO_Port, PULSE_SIG_Pin, 0);
 
-			//SET PULSE SIGNAL TO HIGH (TDC WILL START MEASUREMENT AS SOON AS MCU SETS THIS PULSE SIGNAL HIGH)
-			HAL_GPIO_WritePin(PULSE_SIG_GPIO_Port, PULSE_SIG_Pin, 1);
-			HAL_GPIO_WritePin(PULSE_SIG_GPIO_Port, PULSE_SIG_Pin, 0);
+				while(gTDC_IntFlag == 0); //wait here until TDC raises interrupt to MCU
+				// (ie: wait for TDC to say to MCU: "MEASUREMENT DONE, COME COLLECT JUICER MEASUREMENTS")
 
-			while(gTDC_IntFlag == 0); //wait here until TDC raises interrupt to MCU
-					// (ie: wait for TDC to say to MCU: "MEASUREMENT DONE, COME COLLECT JUICER MEASUREMENTS")
+				//yoink the measurements from TDC TIMEx registers and do some black magic math to convert to seconds
+				myTDC_CalculateTime(&TDC_singleConvertedTime);
+				totalTime += TDC_singleConvertedTime;
 
-			//yoink the measurements from TDC TIMEx registers and do some black magic math to convert to seconds
-			juicerjuice = myTDC_ReadInterruptRegister();
-			myTDC_CalculateTime(&TDC_convertedTime);
+				TDC_singleCableLength = TDC_singleConvertedTime;
+				myTDC_CableLength(&TDC_singleCableLength);
+				totalLength += TDC_singleCableLength;
+			}
+			TDC_convertedTimeAvg = totalTime / 100.0;
+			TDC_cableLengthAvg = totalLength / 100.0;
 
 
+			totalTime = 0;
+			totalLength = 0;
 			//reset the TDC-related Trigger and Interrupt flags
 			gTDC_TrigFlag = 0;
 			gTDC_IntFlag 	= 0;
+
 		}
 
-
-		SSD1306_GotoXY(38, 0);
-		SSD1306_Puts(" TDR ", &Font_11x18, 0);
-
-
-		SSD1306_GotoXY(0, 24);
-		sprintf(buff, "Config1: %0.2f", TDC_convertedTime);
-		SSD1306_Puts(buff, &Font_7x10, 1);
-
-		SSD1306_UpdateScreen();
-
-
-
-		HAL_Delay(1000);
+		SSD1306_Clear();
+		myOLED_PrintTDC_Data(&TDC_convertedTimeAvg, &TDC_cableLengthAvg); //print to OLED juicer
+		HAL_Delay(250);
 	}
   /* USER CODE END 3 */
 }
@@ -241,12 +245,6 @@ void SystemClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-	//HAL_GPIO_TogglePin(TDC7200_EN_GPIO_Port, TDC7200_EN_Pin);
-	//signalBit = HAL_GPIO_ReadPin(PULSE_SIG_IN_GPIO_Port, PULSE_SIG_IN_Pin);
-}
-
 void myOLED_Startup(void)
 {
 	SSD1306_Clear();
@@ -259,6 +257,24 @@ void myOLED_Startup(void)
 
 	SSD1306_GotoXY(24, 52);
 	SSD1306_Puts("UVic ECE499", &Font_7x10, 1);
+	SSD1306_UpdateScreen();
+}
+
+void myOLED_PrintTDC_Data(double* tdcTime, double* tdcLength)
+{
+	SSD1306_GotoXY(38, 0);
+	SSD1306_Puts(" TDR ", &Font_11x18, 0);
+	SSD1306_GotoXY(0, 24);
+	sprintf(buff, "ToF: %0.4e s", *tdcTime);
+	SSD1306_Puts(buff, &Font_7x10, 1);
+
+	SSD1306_GotoXY(0, 40);
+	SSD1306_Puts("Cable ", &Font_7x10, 1);
+	SSD1306_GotoXY(50, 46);
+	sprintf(buff, "%0.2f m", *tdcLength);
+	SSD1306_Puts(buff, &Font_7x10, 1);
+	SSD1306_GotoXY(0, 52);
+	SSD1306_Puts("Length ", &Font_7x10, 1);
 	SSD1306_UpdateScreen();
 }
 
@@ -286,7 +302,7 @@ void myDAC_init(void)
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	//confirm that the EXTI was triggered by TDC7200_TRIG_Pin (PIN PB6) and not some rando pin
-																					// (since this ISR is shared between pins PB5:PB9)
+																					// (since this ISR is shared between pins 5:9 of each GPIO port)
 	if(GPIO_Pin == TDC7200_TRIG_Pin)
 	{
 		//TDC HAS RAISED INTERRUPT, SIGNALING TO MCU THAT NEW MEASUREMENT HAS BEGUN
@@ -298,15 +314,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	}
 }
 
-//void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
-//{
-//	if(GPIO_Pin == BUTTON2_Pin)
-//	{
-//		//TDC HAS RAISED INTERRUPT, SIGNALING TO MCU THAT NEW MEASUREMENT HAS BEGUN
-//		gTDC_TrigFlag = 1;  //set the triggerFlag variable to 1, then main while loop code juicer will continue
-//	}
-//
-//}
+
 
 
 /* USER CODE END 4 */
