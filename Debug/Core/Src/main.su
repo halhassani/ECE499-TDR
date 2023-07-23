@@ -1,5 +1,8 @@
 ../Core/Src/main.c:83:5:main	24	static
-../Core/Src/main.c:207:6:SystemClock_Config	88	static
-../Core/Src/main.c:251:6:HAL_TIM_PeriodElapsedCallback	16	static
-../Core/Src/main.c:257:6:OLED_Startup	8	static
-../Core/Src/main.c:277:6:Error_Handler	4	static,ignoring_inline_asm
+../Core/Src/main.c:195:6:SystemClock_Config	88	static
+../Core/Src/main.c:239:6:HAL_TIM_PeriodElapsedCallback	16	static
+../Core/Src/main.c:245:6:myOLED_Startup	8	static
+../Core/Src/main.c:262:6:myDAC_init	4	static
+../Core/Src/main.c:284:6:myTDC_Init	16	static
+../Core/Src/main.c:318:6:myTDC_StartMeasurement	16	static
+../Core/Src/main.c:333:6:Error_Handler	4	static,ignoring_inline_asm
