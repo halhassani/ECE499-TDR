@@ -36,7 +36,7 @@ uint8_t TDC7200_WriteRegister(uint8_t reg, uint8_t* dataToWrite)
 
 
 
-double TDC7200_Read_N_Registers(uint8_t regToRead, uint8_t n)
+uint32_t TDC7200_Read_N_Registers(uint8_t regToRead, uint8_t n)
 {
 	//Note: the TDC chip reads from 1 register (1byte) or 3 registers if AutoIncr bit cmd is used (ie: 3bytes)
 	//User chooses whether to send n=1 or n=3 into this function depending on what register(s) they want to read from
@@ -44,7 +44,7 @@ double TDC7200_Read_N_Registers(uint8_t regToRead, uint8_t n)
 
 	uint8_t	rxSpiData[3]; //this array will hold either 1 or 3 bytes of data sent from TDC register(s)
 	uint32_t processedData = 0;
-	double finalResult = 0;
+	uint32_t finalResult = 0;
 	uint8_t regAndOpcode = 0;
 
 
@@ -122,7 +122,7 @@ void myTDC_Init(void)
 
 	/***************************** TDC CONFIG_1 REG ******************************/
 	regConfigurations = MEASURE_MODE_1 | START_EDGE_RISING | STOP_EDGE_RISING
-			|	TRIGG_EDGE_RISING | PARITY_DISABLED | FORCE_CALIBRATION_OFF; //ie: setting Config_1 reg to 0x00
+			|	TRIGG_EDGE_RISING | PARITY_DISABLED | FORCE_CALIBRATION_ON; //ie: setting Config_1 reg to 0x80
 	TDC7200_WriteRegister(TDC_CONFIG1, &regConfigurations);
 	regConfigurations = 0; //reset variable to get ready for new register configs
 	/****************************************************************************/
@@ -148,6 +148,55 @@ void myTDC_Init(void)
 	/****************************************************************************/
 	/****************************************************************************/
 }
+
+//an array of addresses to make life easier when using the myTDC_CalculateTime fxn shown below
+uint8_t TDC_Time_Registers[6] =
+{
+		TDC_TIME + TDC_TIME1,
+		TDC_TIME + TDC_TIME2,
+		TDC_TIME + TDC_TIME3,
+		TDC_TIME + TDC_TIME4,
+		TDC_TIME + TDC_TIME5,
+		TDC_TIME + TDC_TIME6,
+};
+
+void myTDC_CalculateTime(double* pData)
+{
+	*pData = 0;
+	for(uint8_t idx = 0; idx < 6; idx++)
+	{
+		*pData  += TDC7200_Read_N_Registers((TDC_Time_Registers[idx]),3);
+	}
+
+	uint32_t calibrationRegData[2] = {0,0};
+	calibrationRegData[CALIBRATION_REG_1_DATA] = TDC7200_Read_N_Registers(TDC_CALIBRATION1, 3);
+	//right shift by 1 since bit 23 is a parity bit, nothing to do with the calibration value
+	calibrationRegData[CALIBRATION_REG_1_DATA] = (calibrationRegData[CALIBRATION_REG_1_DATA] >> 1);
+	calibrationRegData[CALIBRATION_REG_2_DATA] = TDC7200_Read_N_Registers(TDC_CALIBRATION2, 3);
+	//right shift by 1 since bit 23 is a parity bit, nothing to do with the calibration value
+	calibrationRegData[CALIBRATION_REG_2_DATA] = (calibrationRegData[CALIBRATION_REG_2_DATA] >> 1);
+
+	uint32_t calibration2Period = 0;
+	calibration2Period = TDC7200_Read_N_Registers(TDC_CONFIG2, 1); //read entire Config2 register into this var
+	calibration2Period &= CALIBRATION_PERIOD_pos; //isolate for bits 6 and 7, responsible for calibr.Period value
+
+	//now we check which calibr.period settings were used and assign our variable accordingly
+	if(calibration2Period == CALIBRATION2_PERIOD_2) calibration2Period = 2;
+	else if(calibration2Period == CALIBRATION2_PERIOD_10) calibration2Period = 10;
+	else if(calibration2Period == CALIBRATION2_PERIOD_20) calibration2Period = 20;
+	else calibration2Period = 40;
+
+	//formula used from TDC7200 datasheet pg.16
+	double calCount = ((calibrationRegData[CALIBRATION_REG_2_DATA] - calibrationRegData[CALIBRATION_REG_1_DATA] )
+			/ ((double)calibration2Period - 1) );
+
+	//formula used from TDC7200 datasheet pg.16
+	double normLSB = CLOCK_PERIOD / calCount;
+
+	//this is our TimeOfFlight ToF value:
+	*pData = (	(*pData) * normLSB	);
+}
+
 
 
 void myTDC_StartMeasurement(void)

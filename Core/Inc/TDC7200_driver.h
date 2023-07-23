@@ -12,6 +12,8 @@
 #include "stm32g4xx.h"
 #include "stm32g4xx_hal_spi.h"
 
+//the external clock connected to the TDC_CLK pin (8MHz in our PCB)
+#define CLOCK_PERIOD							(1.0/8000000.0L)
 
 //Command bits (READ, WRITE, AUTO-INCREMENT)
 #define TDC_READ_CMD							(0 << 6)
@@ -42,6 +44,15 @@
 #define TDC_TIME6									0X1A
 #define TDC_CALIBRATION1					0X1B
 #define TDC_CALIBRATION2					0X1C
+
+
+
+//used in an array of addresses to make life easier when using the myTDC_CalculateTime fxn from the driver file
+#define TDC_TIME 									0x00
+
+
+
+
 
 //Bitfield definitions/macros
 /***************** ConfigReg_1 ******************/
@@ -95,10 +106,14 @@
 #define AVG_CYCLES_64					((1<<5) | (1<<4) | (0<<3))
 #define AVG_CYCLES_128				((1<<5) | (1<<4) | (1<<3)) // 128 Measurement cycles
 
+#define CALIBRATION_PERIOD_pos				((1<<7) | (1<<6))
 #define CALIBRATION2_PERIOD_2					((0<<7) | (0<<6)) //Calibration 2 - measuring 2 CLOCK periods
 #define CALIBRATION2_PERIOD_10				((0<<7) | (1<<6)) //Calibration 2 - measuring 10 CLOCK periods
 #define CALIBRATION2_PERIOD_20				((1<<7) | (0<<6)) //Calibration 2 - measuring 20 CLOCK periods
 #define CALIBRATION2_PERIOD_40				((1<<7) | (1<<6)) //Calibration 2 - measuring 40 CLOCK periods
+
+#define CALIBRATION_REG_1_DATA							0
+#define CALIBRATION_REG_2_DATA							1
 /************************************************/
 /************************************************/
 
@@ -129,11 +144,13 @@
 
 //Functions
 uint8_t TDC7200_WriteRegister(uint8_t reg, uint8_t* tx_spiData);
-double TDC7200_Read_N_Registers(uint8_t regToRead , uint8_t n);
+uint32_t TDC7200_Read_N_Registers(uint8_t regToRead , uint8_t n);
 uint8_t myTDC_ReadInterruptRegister(void);
+void myTDC_CalculateTime(double* );
 void myTDC_StartMeasurement(void);
 void myTDC_EnablePowerOn(void);
 void myTDC_Init(void);
+
 
 
 #endif /* INC_TDC7200_DRIVER_H_ */

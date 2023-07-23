@@ -133,7 +133,9 @@ int main(void)
 				//(Cuz STM32CubeMX IDE doesn't let you configure DAC to output a simple DC voltage, which we want)
 
 	//HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
-  double idk = 99;
+	uint8_t juicerjuice = 0;
+	uint32_t TDC_timeValues = 0;
+	double TDC_convertedTime = 0;
 
   /* USER CODE END 2 */
 
@@ -164,7 +166,8 @@ int main(void)
 					// (ie: wait for TDC to say to MCU: "MEASUREMENT DONE, COME COLLECT JUICER MEASUREMENTS")
 
 			//yoink the measurements from TDC TIMEx registers and do some black magic math to convert to seconds
-			uint8_t juicerjuice = 0;
+			juicerjuice = myTDC_ReadInterruptRegister();
+			myTDC_CalculateTime(&TDC_convertedTime);
 
 
 			//reset the TDC-related Trigger and Interrupt flags
@@ -178,7 +181,7 @@ int main(void)
 
 
 		SSD1306_GotoXY(0, 24);
-		sprintf(buff, "Config1: %0.2f", idk);
+		sprintf(buff, "Config1: %0.2f", TDC_convertedTime);
 		SSD1306_Puts(buff, &Font_7x10, 1);
 
 		SSD1306_UpdateScreen();
