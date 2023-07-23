@@ -50,7 +50,7 @@
 
 char buff[25];
 ADXL345 accelDevice;
-uint8_t signalBit = 0;
+uint8_t gTrigFlag= 0;
 
 /* USER CODE END PV */
 
@@ -135,17 +135,9 @@ int main(void)
 	myDAC_init(); 	//CONFIGURING DAC1 PERIPHERAL MANUALLY
 				//(Cuz STM32CubeMX IDE doesn't let you configure DAC to output a simple DC voltage, which we want)
 
-
-
-  //myTDC_StartMeasurement();
-
-
-
 	//HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
   double idk = 99;
 
-  uint8_t incr = 0;
-  uint8_t interruptChecker = 0;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -156,37 +148,27 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-
-	  idk = TDC7200_Read_N_Registers((TDC_CONFIG1), 1);
-
-	  //HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
-
 		SSD1306_Clear();
+		if(HAL_GPIO_ReadPin(BUTTON2_GPIO_Port, BUTTON2_Pin) == 1)
+		{
+			TDC7200_startMeasurement();
+			while()
+		}
+
+
 		SSD1306_GotoXY(38, 0);
 		SSD1306_Puts(" TDR ", &Font_11x18, 0);
 
-		SSD1306_GotoXY(0, 18);
+
+		SSD1306_GotoXY(0, 24);
 		sprintf(buff, "Config1: %0.2f", idk);
-		SSD1306_Puts(buff, &Font_7x10, 1);
-
-		idk = TDC7200_Read_N_Registers((TDC_CONFIG2), 1);
-//		interruptChecker = myTDC_ReadInterruptRegister();
-		SSD1306_GotoXY(0, 36);
-		sprintf(buff, "Config2: %0.2f", idk);
-		SSD1306_Puts(buff, &Font_7x10, 1);
-
-
-		idk = TDC7200_Read_N_Registers((TDC_INT_MASK), 1);
-		SSD1306_GotoXY(0, 48);
-		sprintf(buff, "IntMask: %0.2f", idk);
 		SSD1306_Puts(buff, &Font_7x10, 1);
 
 		SSD1306_UpdateScreen();
 
-		HAL_Delay(1000);
-		incr++;
-		if(incr > 22) incr = 0;
 
+
+		HAL_Delay(1000);
 	}
   /* USER CODE END 3 */
 }

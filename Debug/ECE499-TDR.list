@@ -2074,8 +2074,8 @@ int main(void)
  8001342:	482a      	ldr	r0, [pc, #168]	; (80013ec <main+0x144>)
  8001344:	f000 fbdc 	bl	8001b00 <SSD1306_Puts>
 
-		SSD1306_GotoXY(0, 18);
- 8001348:	2112      	movs	r1, #18
+		SSD1306_GotoXY(0, 24);
+ 8001348:	2118      	movs	r1, #24
  800134a:	2000      	movs	r0, #0
  800134c:	f000 fb42 	bl	80019d4 <SSD1306_GotoXY>
 		sprintf(buff, "Config1: %0.2f", idk);
@@ -2490,7 +2490,7 @@ void myTDC_Init(void)
  80015d8:	71fb      	strb	r3, [r7, #7]
 			| NEW_MEAS_MASK_ENABLED; 	//ie: disable CLOCK OVF INT flag since this used only
 																//in Measurement Mode 2 (and we using Mode 1)
-																		//ie: setting INT_MASK reg to 0x03
+			//ie: setting INT_MASK reg to 0x03
 
 	TDC7200_WriteRegister(TDC_INT_MASK, &regConfigurations);
  80015da:	1dfb      	adds	r3, r7, #7

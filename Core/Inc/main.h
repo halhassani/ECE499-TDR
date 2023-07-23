@@ -74,6 +74,7 @@ void Error_Handler(void);
 #define BUTTON2_GPIO_Port GPIOA
 #define TDC7200_TRIG_Pin GPIO_PIN_6
 #define TDC7200_TRIG_GPIO_Port GPIOB
+#define TDC7200_TRIG_EXTI_IRQn EXTI9_5_IRQn
 
 /* USER CODE BEGIN Private defines */
 
