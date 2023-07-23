@@ -66,6 +66,7 @@ void Error_Handler(void);
 #define PULSE_SIG_GPIO_Port GPIOB
 #define TDC7200_INT_Pin GPIO_PIN_8
 #define TDC7200_INT_GPIO_Port GPIOA
+#define TDC7200_INT_EXTI_IRQn EXTI9_5_IRQn
 #define ADXL345_Pin GPIO_PIN_9
 #define ADXL345_GPIO_Port GPIOA
 #define TDC7200_CS_Pin GPIO_PIN_11
