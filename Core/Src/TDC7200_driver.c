@@ -101,11 +101,59 @@ uint8_t myTDC_ReadInterruptRegister(void)
 	return retVal;
 }
 
-void TDC7200_startMeasurement(void)
+
+
+//This fxn toggles TDC_EN pin from 0 to 1 to ensure TDC powers up properly
+//(TDC must see 1 low-to-high edge on EN pin)
+void myTDC_EnablePowerOn(void)
 {
-	uint8_t address[2] = {40, 43};
-	//ie: spi reads it as: BYTE 1: 0100 0000
-	HAL_GPIO_WritePin(TDC7200_CS_GPIO_Port, TDC7200_CS_Pin, GPIO_PIN_RESET);
-	HAL_SPI_Transmit(&hspi1, address, 2, HAL_MAX_DELAY);
-	HAL_GPIO_WritePin(TDC7200_CS_GPIO_Port, TDC7200_CS_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(TDC7200_EN_GPIO_Port, TDC7200_EN_Pin, 0);
+	HAL_Delay(500);
+	HAL_GPIO_WritePin(TDC7200_EN_GPIO_Port, TDC7200_EN_Pin, 1);
+	HAL_Delay(500); //Delay cuz TDC requires some time until its internal Vregulator becomes stable
+					//(TDC7200 datasheet pg.20: 8.4.7 Wait Times for TDC7200 Startup)
 }
+
+
+//THIS FXN INITIALIZES TDC REGISTERS TO SETTINGS THAT WE WANT, NO CAP
+void myTDC_Init(void)
+{
+	uint8_t regConfigurations = 0;
+
+	/***************************** TDC CONFIG_1 REG ******************************/
+	regConfigurations = MEASURE_MODE_1 | START_EDGE_RISING | STOP_EDGE_RISING
+			|	TRIGG_EDGE_RISING | PARITY_DISABLED | FORCE_CALIBRATION_OFF; //ie: setting Config_1 reg to 0x00
+	TDC7200_WriteRegister(TDC_CONFIG1, &regConfigurations);
+	regConfigurations = 0; //reset variable to get ready for new register configs
+	/****************************************************************************/
+	/****************************************************************************/
+
+
+	/***************************** TDC CONFIG_2 REG ******************************/
+	regConfigurations = NUM_STOP_SINGLE | AVG_CYCLES_1 | CALIBRATION2_PERIOD_2;
+	TDC7200_WriteRegister(TDC_CONFIG2, &regConfigurations); //ie: setting Config_2 reg to 0x00
+	regConfigurations = 0;
+	/****************************************************************************/
+	/****************************************************************************/
+
+
+	/***************************** TDC INT_MASK REG ******************************/
+	regConfigurations = CLOCK_CNTR_OVF_MASK_DISABLED | COARSE_CNTR_OVF_MASK_ENABLED
+			| NEW_MEAS_MASK_ENABLED; 	//ie: disable CLOCK OVF INT flag since this used only
+																//in Measurement Mode 2 (and we using Mode 1)
+			//ie: setting INT_MASK reg to 0x03
+
+	TDC7200_WriteRegister(TDC_INT_MASK, &regConfigurations);
+	regConfigurations = 0;
+	/****************************************************************************/
+	/****************************************************************************/
+}
+
+
+void myTDC_StartMeasurement(void)
+{
+	uint8_t regConfigurations = 0;
+	regConfigurations = START_MEASUREMENT;
+	TDC7200_WriteRegister(TDC_CONFIG1, &regConfigurations);
+}
+

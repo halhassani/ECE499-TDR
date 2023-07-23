@@ -1,10 +1,7 @@
-main.c:85:5:main	5
-main.c:201:6:SystemClock_Config	3
-main.c:245:6:HAL_TIM_PeriodElapsedCallback	1
-main.c:251:6:myOLED_Startup	1
-main.c:268:6:myDAC_init	1
-main.c:289:6:myTDC_EnablePowerOn	1
-main.c:298:6:myTDC_Init	1
-main.c:331:6:myTDC_StartMeasurement	1
-main.c:339:6:HAL_GPIO_EXTI_Callback	3
-main.c:371:6:Error_Handler	1
+main.c:81:5:main	5
+main.c:197:6:SystemClock_Config	3
+main.c:241:6:HAL_TIM_PeriodElapsedCallback	1
+main.c:247:6:myOLED_Startup	1
+main.c:264:6:myDAC_init	1
+main.c:283:6:HAL_GPIO_EXTI_Callback	3
+main.c:315:6:Error_Handler	1

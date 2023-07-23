@@ -1,4 +1,6 @@
 TDC7200_driver.c:14:9:TDC7200_WriteRegister	2
 TDC7200_driver.c:39:8:TDC7200_Read_N_Registers	4
 TDC7200_driver.c:82:9:myTDC_ReadInterruptRegister	1
-TDC7200_driver.c:104:6:TDC7200_startMeasurement	1
+TDC7200_driver.c:108:6:myTDC_EnablePowerOn	1
+TDC7200_driver.c:119:6:myTDC_Init	1
+TDC7200_driver.c:153:6:myTDC_StartMeasurement	1
