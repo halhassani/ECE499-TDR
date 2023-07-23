@@ -187,7 +187,6 @@ int main(void)
 			//reset the TDC-related Trigger and Interrupt flags
 			gTDC_TrigFlag = 0;
 			gTDC_IntFlag 	= 0;
-
 		}
 
 		SSD1306_Clear();
@@ -265,13 +264,13 @@ void myOLED_PrintTDC_Data(double* tdcTime, double* tdcLength)
 	SSD1306_GotoXY(38, 0);
 	SSD1306_Puts(" TDR ", &Font_11x18, 0);
 	SSD1306_GotoXY(0, 24);
-	sprintf(buff, "ToF: %0.4e s", *tdcTime);
+	sprintf(buff, "ToF: %0.3e s", *tdcTime);
 	SSD1306_Puts(buff, &Font_7x10, 1);
 
 	SSD1306_GotoXY(0, 40);
 	SSD1306_Puts("Cable ", &Font_7x10, 1);
 	SSD1306_GotoXY(50, 46);
-	sprintf(buff, "%0.2f m", *tdcLength);
+	sprintf(buff, "%0.3f m", *tdcLength);
 	SSD1306_Puts(buff, &Font_7x10, 1);
 	SSD1306_GotoXY(0, 52);
 	SSD1306_Puts("Length ", &Font_7x10, 1);
@@ -307,6 +306,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	{
 		//TDC HAS RAISED INTERRUPT, SIGNALING TO MCU THAT NEW MEASUREMENT HAS BEGUN
 		gTDC_TrigFlag = 1;  //set the triggerFlag variable to 1, then main while loop code juicer will continue
+
+
 	}
 	if (GPIO_Pin == TDC7200_INT_Pin)
 	{

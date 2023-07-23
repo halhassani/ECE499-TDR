@@ -12,6 +12,9 @@
 #include "stm32g4xx.h"
 #include "stm32g4xx_hal_spi.h"
 
+#define CABLE_VELOCITY_FACTOR			0.71L
+#define CABLE_CALIBRATION					1.050207L
+
 //the external clock connected to the TDC_CLK pin (8MHz in our PCB)
 #define CLOCK_PERIOD							(1.0/8000000.0L)
 

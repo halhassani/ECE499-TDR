@@ -130,7 +130,7 @@ void myTDC_Init(void)
 
 
 	/***************************** TDC CONFIG_2 REG ******************************/
-	regConfigurations = NUM_STOP_SINGLE | AVG_CYCLES_1 | CALIBRATION2_PERIOD_2;
+	regConfigurations = NUM_STOP_SINGLE | AVG_CYCLES_1 | CALIBRATION2_PERIOD_40;
 	TDC7200_WriteRegister(TDC_CONFIG2, &regConfigurations); //ie: setting Config_2 reg to 0x00
 	regConfigurations = 0;
 	/****************************************************************************/
@@ -170,11 +170,7 @@ void myTDC_CalculateTime(double* pData)
 
 	uint32_t calibrationRegData[2] = {0,0};
 	calibrationRegData[CALIBRATION_REG_1_DATA] = TDC7200_Read_N_Registers(TDC_CALIBRATION1, 3);
-	//right shift by 1 since bit 23 is a parity bit, nothing to do with the calibration value
-	calibrationRegData[CALIBRATION_REG_1_DATA] = (calibrationRegData[CALIBRATION_REG_1_DATA] >> 1);
 	calibrationRegData[CALIBRATION_REG_2_DATA] = TDC7200_Read_N_Registers(TDC_CALIBRATION2, 3);
-	//right shift by 1 since bit 23 is a parity bit, nothing to do with the calibration value
-	calibrationRegData[CALIBRATION_REG_2_DATA] = (calibrationRegData[CALIBRATION_REG_2_DATA] >> 1);
 
 	uint32_t calibration2Period = 0;
 	calibration2Period = TDC7200_Read_N_Registers(TDC_CONFIG2, 1); //read entire Config2 register into this var
@@ -194,13 +190,13 @@ void myTDC_CalculateTime(double* pData)
 	double normLSB = CLOCK_PERIOD / calCount;
 
 	//this is our TimeOfFlight ToF value:
-	*pData = (	(*pData) * normLSB	);
+	*pData = (	((*pData) * normLSB	) - (8.25*0.000000001) );
 }
 
 void myTDC_CableLength(double* pLength)
 {
-	double cablePropogationVel = (0.71 * 299792458.0L);
-	*pLength = cablePropogationVel * (*pLength);
+	double cablePropogationVel = (CABLE_VELOCITY_FACTOR * 299792458.0L);
+	*pLength = (((cablePropogationVel * (*pLength)) / 2.0) / CABLE_CALIBRATION);
 }
 
 
