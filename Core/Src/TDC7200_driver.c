@@ -17,7 +17,7 @@ uint8_t TDC7200_WriteRegister(uint8_t reg, uint8_t* dataToWrite)
 	HAL_GPIO_WritePin(TDC7200_CS_GPIO_Port, TDC7200_CS_Pin, GPIO_PIN_RESET);
 
 	uint8_t combinedJuicer[2];
-	combinedJuicer[0] = reg;
+	combinedJuicer[0] = reg | TDC_WRITE_CMD;
 	combinedJuicer[1] = *dataToWrite;
 
 	/*	Tx 2 bytes to TDC:
@@ -70,7 +70,7 @@ double TDC7200_Read_N_Registers(uint8_t regToRead, uint8_t n)
 	if(n == 1)
 		processedData = rxSpiData[0];
 	if(n==3)
-		processedData = (rxSpiData[0] << 16) | (rxSpiData[1] << 8) | (rxSpiData[0] << 0);
+		processedData = (rxSpiData[0] << 16) | (rxSpiData[1] << 8) | (rxSpiData[2] << 0);
 
 
 	finalResult = processedData;
@@ -79,10 +79,32 @@ double TDC7200_Read_N_Registers(uint8_t regToRead, uint8_t n)
 	return finalResult;
 }
 
+uint8_t myTDC_ReadInterruptRegister(void)
+{
+	uint8_t INT_STATUS_REGISTER = 0;
+	INT_STATUS_REGISTER = TDC_READ_CMD | TDC_INT_STATUS;
+	uint8_t retVal = 0;
+
+	//select this slave device, CS = 0
+	HAL_GPIO_WritePin(TDC7200_CS_GPIO_Port, TDC7200_CS_Pin, GPIO_PIN_RESET);
+
+	//Tx data via SPI API, if SPI txn fails (ie: != HAL_OK), return -1
+	HAL_SPI_Transmit(&hspi1, &INT_STATUS_REGISTER, 1, HAL_MAX_DELAY);
+
+
+	//Rx data via SPI API, if SPI rxn fails (ie: != HAL_OK), return -1
+	HAL_SPI_Receive(&hspi1, &retVal, 1, HAL_MAX_DELAY);
+
+	//de-select this slave device, CS = 1
+	HAL_GPIO_WritePin(TDC7200_CS_GPIO_Port, TDC7200_CS_Pin, GPIO_PIN_SET);
+
+	return retVal;
+}
+
 void TDC7200_startMeasurement(void)
 {
 	uint8_t address[2] = {40, 43};
-
+	//ie: spi reads it as: BYTE 1: 0100 0000
 	HAL_GPIO_WritePin(TDC7200_CS_GPIO_Port, TDC7200_CS_Pin, GPIO_PIN_RESET);
 	HAL_SPI_Transmit(&hspi1, address, 2, HAL_MAX_DELAY);
 	HAL_GPIO_WritePin(TDC7200_CS_GPIO_Port, TDC7200_CS_Pin, GPIO_PIN_SET);
