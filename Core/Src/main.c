@@ -152,11 +152,17 @@ int main(void)
 		SSD1306_Clear();
 		if(HAL_GPIO_ReadPin(BUTTON2_GPIO_Port, BUTTON2_Pin) == 1)
 		{
+			//
+			HAL_Delay(100);
+			while(HAL_GPIO_ReadPin(BUTTON2_GPIO_Port, BUTTON2_Pin) == 1); //do nothing, wait here until user releases button
+
+
 			myTDC_StartMeasurement(); //MCU will write to TDC configReg to START_MEASUREMENT
 			while(gTDC_TrigFlag == 0); //DO NOTHING, WAIT UNTIL TDC_TRIG PIN TRIGGERS MCU ISR, ie: w8 until TDC rdy
 
 			//SET PULSE SIGNAL TO HIGH (TDC WILL START MEASUREMENT AS SOON AS MCU SETS THIS PULSE SIGNAL HIGH)
 			HAL_GPIO_WritePin(PULSE_SIG_GPIO_Port, PULSE_SIG_Pin, 1);
+			HAL_GPIO_WritePin(PULSE_SIG_GPIO_Port, PULSE_SIG_Pin, 0);
 
 			while(gTDC_IntFlag == 0); //wait here until TDC raises interrupt to MCU
 					// (ie: wait for TDC to say to MCU: "MEASUREMENT DONE, COME COLLECT JUICER MEASUREMENTS")
@@ -344,6 +350,17 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 		gTDC_IntFlag = 1;
 	}
 }
+
+//void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+//{
+//	if(GPIO_Pin == BUTTON2_Pin)
+//	{
+//		//TDC HAS RAISED INTERRUPT, SIGNALING TO MCU THAT NEW MEASUREMENT HAS BEGUN
+//		gTDC_TrigFlag = 1;  //set the triggerFlag variable to 1, then main while loop code juicer will continue
+//	}
+//
+//}
+
 
 /* USER CODE END 4 */
 
