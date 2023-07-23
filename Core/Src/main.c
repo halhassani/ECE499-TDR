@@ -50,7 +50,8 @@
 
 char buff[25];
 ADXL345 accelDevice;
-uint8_t gTrigFlag= 0;
+uint8_t gTDC_TrigFlag= 0;
+uint8_t gTDC_IntFlag= 0;
 
 /* USER CODE END PV */
 
@@ -151,12 +152,22 @@ int main(void)
 		SSD1306_Clear();
 		if(HAL_GPIO_ReadPin(BUTTON2_GPIO_Port, BUTTON2_Pin) == 1)
 		{
-			TDC7200_startMeasurement(); //MCU will write to TDC configReg to START_MEASUREMENT
-			while(gTrigFlag == 0); //DO NOTHING, WAIT UNTIL TDC_TRIG PIN TRIGGERS MCU ISR, ie: w8 until TDC rdy
+			myTDC_StartMeasurement(); //MCU will write to TDC configReg to START_MEASUREMENT
+			while(gTDC_TrigFlag == 0); //DO NOTHING, WAIT UNTIL TDC_TRIG PIN TRIGGERS MCU ISR, ie: w8 until TDC rdy
 
 			//SET PULSE SIGNAL TO HIGH (TDC WILL START MEASUREMENT AS SOON AS MCU SETS THIS PULSE SIGNAL HIGH)
 			HAL_GPIO_WritePin(PULSE_SIG_GPIO_Port, PULSE_SIG_Pin, 1);
 
+			while(gTDC_IntFlag == 0); //wait here until TDC raises interrupt to MCU
+					// (ie: wait for TDC to say to MCU: "MEASUREMENT DONE, COME COLLECT JUICER MEASUREMENTS")
+
+			//yoink the measurements from TDC TIMEx registers and do some black magic math to convert to seconds
+			uint8_t juicerjuice = 0;
+
+
+			//reset the TDC-related Trigger and Interrupt flags
+			gTDC_TrigFlag = 0;
+			gTDC_IntFlag 	= 0;
 		}
 
 
@@ -326,7 +337,11 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	if(GPIO_Pin == TDC7200_TRIG_Pin)
 	{
 		//TDC HAS RAISED INTERRUPT, SIGNALING TO MCU THAT NEW MEASUREMENT HAS BEGUN
-		gTrigFlag = 1;  //set the triggerFlag variable to 1, then main while loop code juicer will continue
+		gTDC_TrigFlag = 1;  //set the triggerFlag variable to 1, then main while loop code juicer will continue
+	}
+	if (GPIO_Pin == TDC7200_INT_Pin)
+	{
+		gTDC_IntFlag = 1;
 	}
 }
 
