@@ -5,4 +5,4 @@
 ../Core/Src/TDC7200_driver.c:119:6:myTDC_Init	16	static
 ../Core/Src/TDC7200_driver.c:163:6:myTDC_CalculateTime	56	static
 ../Core/Src/TDC7200_driver.c:196:6:myTDC_CableLength	24	static
-../Core/Src/TDC7200_driver.c:203:6:myTDC_StartMeasurement	16	static
+../Core/Src/TDC7200_driver.c:204:6:myTDC_StartMeasurement	16	static

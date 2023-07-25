@@ -2,9 +2,10 @@
  * TDC7200_driver.c
  *
  *  Created on: Jul 4, 2023
- *      Author: Halha
+ *      Author: Hussain Al Hassani
  */
 
+/* TDC7200_driver.c */
 
 #include "TDC7200_driver.h"
 #include <stdint.h>
@@ -196,8 +197,9 @@ void myTDC_CalculateTime(double* pData)
 void myTDC_CableLength(double* pLength)
 {
 	double cablePropogationVel = (CABLE_VELOCITY_FACTOR * 299792458.0L);
-	*pLength = (((cablePropogationVel * (*pLength)) / 2.0) / CABLE_CALIBRATION);
+	*pLength = (((cablePropogationVel * (*pLength)) / 2.0L) / CABLE_CALIBRATION);
 }
+
 
 
 void myTDC_StartMeasurement(void)

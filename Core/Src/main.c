@@ -60,6 +60,7 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 void myOLED_Startup(void);
 void myOLED_PrintTDC_Data(double* tdcTime, double* tdcLength);
+void myOLED_PrintTDC_Propogation(double* tdcTime);
 void myDAC_init(void);
 
 /* USER CODE END PFP */
@@ -141,6 +142,7 @@ int main(void)
 	double TDC_singleCableLength = 0;
 	double TDC_cableLengthAvg = 0;
 
+	double propConstCalc = 0;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -187,11 +189,45 @@ int main(void)
 			//reset the TDC-related Trigger and Interrupt flags
 			gTDC_TrigFlag = 0;
 			gTDC_IntFlag 	= 0;
+
+			SSD1306_Clear();
+			myOLED_PrintTDC_Data(&TDC_convertedTimeAvg, &TDC_cableLengthAvg); //print to OLED juicer
 		}
 
-		SSD1306_Clear();
-		myOLED_PrintTDC_Data(&TDC_convertedTimeAvg, &TDC_cableLengthAvg); //print to OLED juicer
-		HAL_Delay(250);
+
+		if(HAL_GPIO_ReadPin(BUTTON1_GPIO_Port, BUTTON1_Pin) == 1)
+		{
+			//button debouncing and anti-button-holding-juicer
+					HAL_Delay(100);
+					while(HAL_GPIO_ReadPin(BUTTON2_GPIO_Port, BUTTON2_Pin) == 1); //do nothing, wait here until user releases button
+
+					for(uint8_t itr = 0; itr <= 100; itr++)
+			{
+				myTDC_StartMeasurement(); //MCU will write to TDC configReg to START_MEASUREMENT
+				while(gTDC_TrigFlag == 0); //DO NOTHING, WAIT UNTIL TDC_TRIG PIN TRIGGERS MCU ISR, ie: w8 until TDC rdy
+
+				//SET PULSE SIGNAL TO HIGH (TDC WILL START MEASUREMENT AS SOON AS MCU SETS THIS PULSE SIGNAL HIGH)
+				HAL_GPIO_WritePin(PULSE_SIG_GPIO_Port, PULSE_SIG_Pin, 1);
+				HAL_GPIO_WritePin(PULSE_SIG_GPIO_Port, PULSE_SIG_Pin, 0);
+
+				while(gTDC_IntFlag == 0); //wait here until TDC raises interrupt to MCU
+				// (ie: wait for TDC to say to MCU: "MEASUREMENT DONE, COME COLLECT JUICER MEASUREMENTS")
+
+				//yoink the measurements from TDC TIMEx registers and do some black magic math to convert to seconds
+				myTDC_CalculateTime(&TDC_singleConvertedTime);
+				totalTime += TDC_singleConvertedTime;
+			}
+			TDC_convertedTimeAvg = totalTime / 100.0;
+			propConstCalc = 1 / (299792458.0L * TDC_convertedTimeAvg);
+
+			totalTime = 0;
+			//reset the TDC-related Trigger and Interrupt flags
+			gTDC_TrigFlag = 0;
+			gTDC_IntFlag = 0;
+
+			SSD1306_Clear();
+			myOLED_PrintTDC_Propogation(&propConstCalc);
+		}
 	}
   /* USER CODE END 3 */
 }
@@ -278,6 +314,20 @@ void myOLED_PrintTDC_Data(double* tdcTime, double* tdcLength)
 }
 
 
+void myOLED_PrintTDC_Propogation(double* tdcTime)
+{
+	SSD1306_GotoXY(38, 0);
+	SSD1306_Puts(" TDR ", &Font_11x18, 0);
+	SSD1306_GotoXY(0, 28);
+	SSD1306_Puts("Propagation" , &Font_7x10, 1);
+
+	SSD1306_GotoXY(0, 40);
+	SSD1306_Puts("Calculation", &Font_7x10, 1);
+	SSD1306_GotoXY(46, 52);
+	sprintf(buff, "%0.3f ", *tdcTime);
+	SSD1306_Puts(buff, &Font_7x10, 1);
+	SSD1306_UpdateScreen();
+}
 //THIS FXN WILL CONFIGURE DAC TO OUTPUT A STEADY VOLTAGE WHICH WE CAN ADJUST AS DESIRED
 void myDAC_init(void)
 {
