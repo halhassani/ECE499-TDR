@@ -139,7 +139,7 @@ void myTDC_Init(void)
 
 
 	/***************************** TDC INT_MASK REG ******************************/
-	regConfigurations = CLOCK_CNTR_OVF_MASK_DISABLED | COARSE_CNTR_OVF_MASK_ENABLED
+	regConfigurations = CLOCK_CNTR_OVF_MASK_ENABLED | COARSE_CNTR_OVF_MASK_ENABLED
 			| NEW_MEAS_MASK_ENABLED; 	//ie: disable CLOCK OVF INT flag since this used only
 																//in Measurement Mode 2 (and we using Mode 1)
 			//ie: setting INT_MASK reg to 0x03

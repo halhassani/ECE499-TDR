@@ -119,11 +119,11 @@ int main(void)
   MX_DAC1_Init();
   /* USER CODE BEGIN 2 */
 
-  HAL_TIM_Base_Start_IT(&htim2);
+ // HAL_TIM_Base_Start_IT(&htim2);
 
 	SSD1306_Init();		//initialize I2C communication b/w MCU and OLED screen
 	myOLED_Startup(); //prints startup message to OLED screen
-	HAL_Delay(2000);
+	HAL_Delay(2500);
 
 
 	myTDC_EnablePowerOn();	//This fxn toggles TDC_EN pin from 0 to 1 to ensure TDC powers up properly
@@ -143,6 +143,18 @@ int main(void)
 	double TDC_cableLengthAvg = 0;
 
 	double propConstCalc = 0;
+
+	SSD1306_Clear();
+	SSD1306_GotoXY(38, 0);
+	SSD1306_Puts(" TDR ", &Font_11x18, 0);
+	SSD1306_GotoXY(8, 28);
+	SSD1306_Puts("Waiting for user", &Font_7x10, 1);
+
+	SSD1306_GotoXY(44, 40);
+	SSD1306_Puts("input...", &Font_7x10, 1);
+
+	SSD1306_UpdateScreen();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -169,8 +181,25 @@ int main(void)
 				HAL_GPIO_WritePin(PULSE_SIG_GPIO_Port, PULSE_SIG_Pin, 1);
 				HAL_GPIO_WritePin(PULSE_SIG_GPIO_Port, PULSE_SIG_Pin, 0);
 
-				while(gTDC_IntFlag == 0); //wait here until TDC raises interrupt to MCU
-				// (ie: wait for TDC to say to MCU: "MEASUREMENT DONE, COME COLLECT JUICER MEASUREMENTS")
+				uint8_t juiceOnce = 0;
+				while(gTDC_IntFlag == 0) //wait here until TDC raises interrupt to MCU
+				{
+					// (ie: wait for TDC to say to MCU: "MEASUREMENT DONE, COME COLLECT JUICER MEASUREMENTS")
+
+					if(juiceOnce == 0)
+					{
+						SSD1306_Clear();
+						SSD1306_GotoXY(38, 0);
+						SSD1306_Puts(" TDR ", &Font_11x18, 0);
+						SSD1306_GotoXY(0, 24);
+						SSD1306_Puts("w8 for intFlag(B1)", &Font_7x10, 1);
+						SSD1306_GotoXY(0, 36);
+						sprintf(buff, "IntReg: %ld",TDC7200_Read_N_Registers(TDC_INT_STATUS, 1));
+						SSD1306_Puts(buff, &Font_7x10, 1);
+						SSD1306_UpdateScreen();
+					}
+					juiceOnce = 1;
+				}
 
 				//yoink the measurements from TDC TIMEx registers and do some black magic math to convert to seconds
 				myTDC_CalculateTime(&TDC_singleConvertedTime);
@@ -199,7 +228,7 @@ int main(void)
 		{
 			//button debouncing and anti-button-holding-juicer
 					HAL_Delay(100);
-					while(HAL_GPIO_ReadPin(BUTTON2_GPIO_Port, BUTTON2_Pin) == 1); //do nothing, wait here until user releases button
+					while(HAL_GPIO_ReadPin(BUTTON1_GPIO_Port, BUTTON1_Pin) == 1); //do nothing, wait here until user releases button
 
 					for(uint8_t itr = 0; itr <= 100; itr++)
 			{
@@ -210,9 +239,25 @@ int main(void)
 				HAL_GPIO_WritePin(PULSE_SIG_GPIO_Port, PULSE_SIG_Pin, 1);
 				HAL_GPIO_WritePin(PULSE_SIG_GPIO_Port, PULSE_SIG_Pin, 0);
 
-				while(gTDC_IntFlag == 0); //wait here until TDC raises interrupt to MCU
-				// (ie: wait for TDC to say to MCU: "MEASUREMENT DONE, COME COLLECT JUICER MEASUREMENTS")
+				uint8_t juiceOnce = 0;
+				while(gTDC_IntFlag == 0) //wait here until TDC raises interrupt to MCU
+				{
+					// (ie: wait for TDC to say to MCU: "MEASUREMENT DONE, COME COLLECT JUICER MEASUREMENTS")
 
+					if(juiceOnce == 0)
+					{
+						SSD1306_Clear();
+						SSD1306_GotoXY(38, 0);
+						SSD1306_Puts(" TDR ", &Font_11x18, 0);
+						SSD1306_GotoXY(0, 24);
+						SSD1306_Puts("w8 for intFlag(B1)", &Font_7x10, 1);
+						SSD1306_GotoXY(0, 36);
+						sprintf(buff, "IntReg: %ld",TDC7200_Read_N_Registers(TDC_INT_STATUS, 1));
+						SSD1306_Puts(buff, &Font_7x10, 1);
+						SSD1306_UpdateScreen();
+					}
+					juiceOnce = 1;
+				}
 				//yoink the measurements from TDC TIMEx registers and do some black magic math to convert to seconds
 				myTDC_CalculateTime(&TDC_singleConvertedTime);
 				totalTime += TDC_singleConvertedTime;
@@ -229,6 +274,7 @@ int main(void)
 			myOLED_PrintTDC_Propogation(&propConstCalc);
 		}
 	}
+	HAL_Delay(20);
   /* USER CODE END 3 */
 }
 

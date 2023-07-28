@@ -1,8 +1,8 @@
 ../Core/Src/main.c:83:5:main	72	static
-../Core/Src/main.c:239:6:SystemClock_Config	88	static
-../Core/Src/main.c:283:6:myOLED_Startup	8	static
-../Core/Src/main.c:298:6:myOLED_PrintTDC_Data	16	static
-../Core/Src/main.c:317:6:myOLED_PrintTDC_Propogation	16	static
-../Core/Src/main.c:332:6:myDAC_init	4	static
-../Core/Src/main.c:351:6:HAL_GPIO_EXTI_Callback	16	static
-../Core/Src/main.c:377:6:Error_Handler	4	static,ignoring_inline_asm
+../Core/Src/main.c:285:6:SystemClock_Config	88	static
+../Core/Src/main.c:329:6:myOLED_Startup	8	static
+../Core/Src/main.c:344:6:myOLED_PrintTDC_Data	16	static
+../Core/Src/main.c:363:6:myOLED_PrintTDC_Propogation	16	static
+../Core/Src/main.c:378:6:myDAC_init	4	static
+../Core/Src/main.c:397:6:HAL_GPIO_EXTI_Callback	16	static
+../Core/Src/main.c:423:6:Error_Handler	4	static,ignoring_inline_asm

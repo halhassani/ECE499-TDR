@@ -1,8 +1,8 @@
-../Core/Src/TDC7200_driver.c:14:9:TDC7200_WriteRegister	24	static
-../Core/Src/TDC7200_driver.c:39:10:TDC7200_Read_N_Registers	32	static
-../Core/Src/TDC7200_driver.c:82:9:myTDC_ReadInterruptRegister	16	static
-../Core/Src/TDC7200_driver.c:108:6:myTDC_EnablePowerOn	8	static
-../Core/Src/TDC7200_driver.c:119:6:myTDC_Init	16	static
-../Core/Src/TDC7200_driver.c:163:6:myTDC_CalculateTime	56	static
-../Core/Src/TDC7200_driver.c:196:6:myTDC_CableLength	24	static
-../Core/Src/TDC7200_driver.c:204:6:myTDC_StartMeasurement	16	static
+../Core/Src/TDC7200_driver.c:15:9:TDC7200_WriteRegister	24	static
+../Core/Src/TDC7200_driver.c:40:10:TDC7200_Read_N_Registers	32	static
+../Core/Src/TDC7200_driver.c:83:9:myTDC_ReadInterruptRegister	16	static
+../Core/Src/TDC7200_driver.c:109:6:myTDC_EnablePowerOn	8	static
+../Core/Src/TDC7200_driver.c:120:6:myTDC_Init	16	static
+../Core/Src/TDC7200_driver.c:164:6:myTDC_CalculateTime	56	static
+../Core/Src/TDC7200_driver.c:197:6:myTDC_CableLength	24	static
+../Core/Src/TDC7200_driver.c:205:6:myTDC_StartMeasurement	16	static

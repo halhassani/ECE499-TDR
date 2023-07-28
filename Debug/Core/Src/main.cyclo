@@ -1,8 +1,8 @@
-main.c:83:5:main	11
-main.c:239:6:SystemClock_Config	3
-main.c:283:6:myOLED_Startup	1
-main.c:298:6:myOLED_PrintTDC_Data	1
-main.c:317:6:myOLED_PrintTDC_Propogation	1
-main.c:332:6:myDAC_init	1
-main.c:351:6:HAL_GPIO_EXTI_Callback	3
-main.c:377:6:Error_Handler	1
+main.c:83:5:main	13
+main.c:285:6:SystemClock_Config	3
+main.c:329:6:myOLED_Startup	1
+main.c:344:6:myOLED_PrintTDC_Data	1
+main.c:363:6:myOLED_PrintTDC_Propogation	1
+main.c:378:6:myDAC_init	1
+main.c:397:6:HAL_GPIO_EXTI_Callback	3
+main.c:423:6:Error_Handler	1
